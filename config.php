@@ -1,7 +1,7 @@
 <?php return array (
-  'user' => '',
+  'user' => 'root',
   'pass' => '',
-  'dbname' => 'x7chat32',
+  'dbname' => 'x7chat32r',
   'host' => 'localhost',
   'prefix' => 'x7chat_',
 );

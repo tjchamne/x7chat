@@ -6,9 +6,9 @@
 		die(json_encode(array('redirect' => $x7->url('login'))));
 	}
 	
-	$local_sync_time = 5;
-	$global_sync_time = 15;
-	$user_expiration_time = 10;
+	$local_sync_time = 11;
+	$global_sync_time = 31;
+	$user_expiration_time = 61;
 
 	$last_event_id = isset($_SESSION['last_event_id']) ? $_SESSION['last_event_id'] : 0;
 	$orig_last_event_id = $last_event_id;

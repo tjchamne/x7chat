@@ -1,6 +1,6 @@
 <?php $display('layout/header'); ?>
-	<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-2.2.0.js"></script>
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<script type="text/javascript" src="scripts/ko.js"></script>
+	<script type="text/javascript" src="scripts/jquery.js"></script>
 	<script type="text/javascript">
 		var App = new function()
 		{
