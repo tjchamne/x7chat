@@ -8,7 +8,7 @@
 	
 	for(var key in users)
 	{
-		App.add_user_room(users[key]);
+		App.add_user_room(users[key], 1);
 	}
 	
 	for(var key in messages)

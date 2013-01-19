@@ -1,23 +1,6 @@
 <div id="title_def"><?php $lang('settings_title'); ?></div>
 <?php $display('layout/messages'); ?>
 <form class="standard_form" id="settings_form">
-	<h2><?php $lang('account_settings'); ?></h2>
-	<label for="current_password"><?php $lang('current_password'); ?></label>
-	<input type="password" name="current_password" id="current_password" />
-	<p><?php $lang('current_password_instr'); ?></p>
-	
-	<label for="new_password"><?php $lang('new_password'); ?></label>
-	<input type="password" name="new_password" id="new_password" />
-	<p><?php $lang('new_password_instr'); ?></p>
-	
-	<label for="retype_new_password"><?php $lang('retype_new_password'); ?></label>
-	<input type="password" name="retype_new_password" id="retype_new_password" />
-	<p><?php $lang('retype_new_password_instr'); ?></p>
-	
-	<label for="email"><?php $lang('email_label'); ?></label>
-	<input type="text" name="email" id="email" value="<?php $esc($user['email']); ?>" />
-	<p>&nbsp;</p>
-	
 	<h2><?php $lang('profile_settings'); ?></h2>
 	<label for="real_name"><?php $lang('real_name_label'); ?></label>
 	<input type="text" name="real_name" id="real_name" value="<?php $esc($user['real_name']); ?>" />
@@ -36,6 +19,30 @@
 	<textarea name="bio" id="bio"><?php $esc($user['about']); ?></textarea>
 	<p>&nbsp;</p>
 	
+	<?php if($user['email'] != $user['username']): ?>
+		<h2><?php $lang('account_settings'); ?></h2>
+		<label for="current_password"><?php $lang('current_password'); ?></label>
+		<input type="password" name="current_password" id="current_password" />
+		<p><?php $lang('current_password_instr'); ?></p>
+		
+		<label for="new_password"><?php $lang('new_password'); ?></label>
+		<input type="password" name="new_password" id="new_password" />
+		<p><?php $lang('new_password_instr'); ?></p>
+		
+		<label for="retype_new_password"><?php $lang('retype_new_password'); ?></label>
+		<input type="password" name="retype_new_password" id="retype_new_password" />
+		<p><?php $lang('retype_new_password_instr'); ?></p>
+		
+		<label for="email"><?php $lang('email_label'); ?></label>
+		<input type="text" name="email" id="email" value="<?php $esc($user['email']); ?>" />
+		<p>&nbsp;</p>
+	<?php endif; ?>
+	
+	<h2><?php $lang('chat_settings'); ?></h2>
+	<label for="enable_sounds"><?php $lang('enable_sounds'); ?></label>
+	<input type="checkbox" name="enable_sounds" id="enable_sounds" value="1" <?php if($user['enable_sounds']) echo 'checked'; ?>>
+	<p>&nbsp;</p>
+	
 	<input type="submit" value="<?php $lang('save_settings_button'); ?>" />
 </form>
 <script type="text/javascript">
@@ -46,4 +53,6 @@
 		});
 		return false;
 	});
+	
+	App.enable_sounds = <?php echo (int)$user['enable_sounds']; ?>;
 </script>

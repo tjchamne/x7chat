@@ -5,6 +5,8 @@
 		var App = new function()
 		{
 			var app = this;
+			
+			this.enable_sounds = <?php echo (int)$user['enable_sounds']; ?>;
 		
 			this.Room = function(room)
 			{
@@ -21,6 +23,7 @@
 				this.user_id = user.user_id;
 				this.room_id = user.room_id;
 				this.user_name = user.user_name;
+				this.refreshed = 1;
 			}
 			
 			this.Message = function(message)
@@ -93,28 +96,110 @@
 				}, 100);
 			}
 			
-			this.clear_user_rooms = function()
+			this.sync_room_users = function(data)
 			{
 				var rooms = app.rooms();
 				for(var key in rooms)
 				{
-					if(rooms[key].type == 'room')
+					for(var rkey in rooms[key].users())
 					{
-						rooms[key].users.removeAll();
+						var user = rooms[key].users()[rkey];
+						user.refreshed = 0;
 					}
 				}
-			}
 			
-			this.add_user_room = function(user_room)
+				var modified_rooms = [];
+				for(var key in data)
+				{
+					var user_room = new App.UserRoom(data[key]);
+					var room = app.get_room(user_room.room_id, 'room');
+					if(room)
+					{
+						var user = 0;
+						for(var rkey in room.users())
+						{
+							if(room.users()[rkey].user_id == user_room.user_id)
+							{
+								user = room.users()[rkey];
+							}
+						}
+						
+						if($.inArray(room.id, modified_rooms) == -1)
+						{
+							modified_rooms.push(room.id);
+						}
+						
+						if(user)
+						{
+							user.refreshed = 1;
+						}
+						else
+						{
+							app.add_user_room(user_room);
+						}
+					}
+				}
+				
+				for(var key in modified_rooms)
+				{
+					var room = app.get_room(modified_rooms[key], 'room');
+					if(room)
+					{
+						for(var rkey in room.users())
+						{
+							var user = room.users()[rkey];
+							if(!user.refreshed)
+							{
+								room.users.remove(user);
+								
+								var dt = new Date();
+								var utc = Math.round(dt.getTime()/1000);
+								
+								var message = new App.Message({
+									timestamp: utc,
+									source_type: 'system',
+									source_name: '',
+									source_id: '0',
+									dest_type: rooms[key].type, 
+									dest_id: rooms[key].id, 
+									message: <?php echo json_encode($x7->lang('leave_message')); ?>.replace(':user', user_room.user_name)
+								});
+								
+								app.add_message(message);
+							}
+						}
+					}
+				}
+			};
+			
+			this.add_user_room = function(user_room, supress_join_message)
 			{
 				var room = app.get_room(user_room.room_id, 'room');
 				if(room)
 				{
 					room.users.push(user_room);
+					
+					if(!supress_join_message)
+					{
+						var dt = new Date();
+						var utc = Math.round(dt.getTime()/1000);
+						
+						var message = new App.Message({
+							timestamp: utc,
+							source_type: 'system',
+							source_name: '',
+							source_id: '0',
+							dest_type: room.type, 
+							dest_id: room.id, 
+							message: <?php echo json_encode($x7->lang('join_message')); ?>.replace(':user', user_room.user_name)
+						});
+						
+						app.add_message(message);
+					}
 				}
 			}
 			
-			this.add_message = function(message)
+			this.add_message = function(message, supress_sounds)
 			{
 				var do_scroll = false;
 				var messages_height = $("#messages").height();
@@ -177,6 +262,18 @@
 				{
 					$("#message_scroll_wrapper").scrollTop($("#messages").height());
 				}
+				
+				// play sounds
+				if(app.enable_sounds && !supress_sounds)
+				{
+					try
+					{
+						$('#message_sound')[0].play();
+					}
+					catch(ex)
+					{
+					}
+				}
 			}
 			
 			this.send_message = function()
@@ -194,7 +291,7 @@
 					message: $('#message_input').val()
 				});
 				
-				app.add_message(message);
+				app.add_message(message, 1);
 			
 				$.ajax({
 					url: '<?php $url('send'); ?>',
@@ -335,12 +432,7 @@
 					
 					if(data['users'])
 					{
-						App.clear_user_rooms();
-						for(var key in data['users'])
-						{
-							var user_room = new App.UserRoom(data['users'][key]);
-							App.add_user_room(user_room);
-						}
+						App.sync_room_users(data['users']);
 					}
 				}
 			});
@@ -513,12 +605,13 @@
 				<div id="messages" data-bind="foreach: active_room().messages()">
 					<div class="message_container"><span class="timestamp" data-bind="text: timestamp"></span>
 						<!-- ko if: source_type != 'system' -->
-							<span class="sender" data-bind="text: source_name"></span>
+							<span class="sender" data-bind="text: source_name + ':'"></span> 
+							<span class="message" data-bind="text: message"></span>
 						<!-- /ko -->
 						<!-- ko if: source_type == 'system' -->
 							<span class="sender system_sender"><?php $lang('system_sender'); ?>: </span>
+							<span class="message system_message" data-bind="text: message"></span>
 						<!-- /ko -->
-						<span class="message" data-bind="text: message"></span>
 					</div>
 				</div>
 			</div>
@@ -533,4 +626,12 @@
 			</div>
 		<!-- /ko -->
 	</div>
+	<audio id="message_sound">
+	   <source src="sounds/message.ogg" type='audio/ogg; codecs="vorbis"'>
+	   <source src="sounds/message.mp3" type='audio/mpeg; codecs="mp3"'>
+	</audio>
+	<audio id="enter_sound">
+	   <source src="sounds/enter.ogg" type='audio/ogg; codecs="vorbis"'>
+	   <source src="sounds/enter.mp3" type='audio/mpeg; codecs="mp3"'>
+	</audio>
 <?php $display('layout/footer'); ?>

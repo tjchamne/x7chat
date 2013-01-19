@@ -24,6 +24,7 @@
 	$email = isset($_POST['email']) ? $_POST['email'] : '';
 	$real_name = isset($_POST['real_name']) ? $_POST['real_name'] : '';
 	$bio = isset($_POST['bio']) ? $_POST['bio'] : '';
+	$enable_sounds = isset($_POST['enable_sounds']) ? $_POST['enable_sounds'] : '';
 	$gender = isset($_POST['gender']) ? $_POST['gender'] : '';
 	$current_password = isset($_POST['current_password']) ? $_POST['current_password'] : '';
 	$new_password = isset($_POST['new_password']) ? $_POST['new_password'] : '';
@@ -33,7 +34,8 @@
 		':user_id' => $user_id,
 		':real_name' => $real_name, 
 		':bio' => $bio, 
-		':gender' => $gender
+		':gender' => $gender,
+		':enable_sounds' => (bool)$enable_sounds,
 	);
 	
 	$fields = '';
@@ -41,36 +43,39 @@
 	$priv_change = false;
 	$fail = false;
 
-	require('./includes/libraries/phpass/PasswordHash.php');
-	$phpass = new PasswordHash(8, false);
-	
-	if($user['email'] != $email)
+	if($user['email'] != $user['username'])
 	{
-		$priv_change = true;
-		$data[':email'] = $email;
-		$fields .= ',email = :email';
-	}
-	
-	if($new_password || $retype_new_password)
-	{
-		if($new_password != $retype_new_password)
+		require('./includes/libraries/phpass/PasswordHash.php');
+		$phpass = new PasswordHash(8, false);
+		
+		if($user['email'] != $email)
 		{
-			$fail = true;
-			$x7->set_message($x7->lang('passwords_donot_match'));
+			$priv_change = true;
+			$data[':email'] = $email;
+			$fields .= ',email = :email';
 		}
 		
-		$priv_change = true;
-		$hashed_password = $phpass->HashPassword($new_password);
-		$data[':password'] = $hashed_password;
-		$fields .= ',password = :password';
-	}
-	
-	if($priv_change)
-	{
-		if(!$current_password || !$user['password'] || !$phpass->CheckPassword($current_password, $user['password']))
+		if($new_password || $retype_new_password)
 		{
-			$fail = true;
-			$x7->set_message($x7->lang('current_password_wrong'));
+			if($new_password != $retype_new_password)
+			{
+				$fail = true;
+				$x7->set_message($x7->lang('passwords_donot_match'));
+			}
+			
+			$priv_change = true;
+			$hashed_password = $phpass->HashPassword($new_password);
+			$data[':password'] = $hashed_password;
+			$fields .= ',password = :password';
+		}
+		
+		if($priv_change)
+		{
+			if(!$current_password || !$user['password'] || !$phpass->CheckPassword($current_password, $user['password']))
+			{
+				$fail = true;
+				$x7->set_message($x7->lang('current_password_wrong'));
+			}
 		}
 	}
 	
@@ -80,7 +85,8 @@
 			UPDATE {$x7->dbprefix}users SET
 				real_name = :real_name,
 				about = :bio,
-				gender = :gender
+				gender = :gender,
+				enable_sounds = :enable_sounds
 				{$fields}
 			WHERE
 				id = :user_id

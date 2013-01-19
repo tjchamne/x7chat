@@ -473,3 +473,14 @@ ul.sidemenu li.active ul li
 	float: left;
 	width: 505px;
 }
+
+.system_sender
+{
+	display: none;
+}
+
+.system_message
+{
+	font-weight: bold;
+	color: red;
+}

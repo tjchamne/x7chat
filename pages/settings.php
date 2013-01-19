@@ -10,10 +10,12 @@
 	
 	$sql = "
 		SELECT
+			username,
 			real_name, 
 			about, 
 			gender,
-			email
+			email,
+			enable_sounds
 		FROM {$x7->dbprefix}users
 		WHERE
 			id = :user_id

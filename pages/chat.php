@@ -13,7 +13,8 @@
 	$sql = "
 		SELECT
 			id,
-			username
+			username,
+			enable_sounds
 		FROM {$x7->dbprefix}users
 		WHERE
 			id = :user_id

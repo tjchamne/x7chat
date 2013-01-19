@@ -1,0 +1,1 @@
+ALTER TABLE `{$prefix}users` ADD `enable_sounds` BOOL NOT NULL DEFAULT '1';
