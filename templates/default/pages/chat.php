@@ -7,6 +7,7 @@
 			var app = this;
 			
 			this.enable_sounds = <?php echo (int)$user['enable_sounds']; ?>;
+			this.filters = <?php echo json_encode($filters); ?>;
 		
 			this.Room = function(room)
 			{
@@ -59,7 +60,33 @@
 				this.source_name = message.source_name;
 				this.dest_type = message.dest_type;
 				this.dest_id = message.dest_id;
-				this.message = message.message;
+				this.raw_message = message.message;
+				
+				var filtered_message = message.message;
+				for(var key in app.filters)
+				{
+					var filter = app.filters[key];
+					var find = filter.word.replace(/([.*+?^=!:${}()|[\]\/\\])/g, "\\$1");
+					
+					var repl = filter.replacement;
+					if(!repl.length)
+					{
+						for(var len = 0; len < filter.word.length; len++)
+						{
+							repl += '*';
+						}
+					}
+					
+					if(filter.whole_word_only == "1")
+					{
+						find = "\\b" + find + "\\b";
+					}
+					
+					var reg = new RegExp(find, "i");
+					filtered_message = filtered_message.replace(reg, repl);
+				}
+				
+				this.message = filtered_message;
 			}
 			
 			this.add_room = function(room)
@@ -433,6 +460,11 @@
 					if(data['users'])
 					{
 						App.sync_room_users(data['users']);
+					}
+					
+					if(data['filters'])
+					{
+						App.filters = data['filters'];
 					}
 				}
 			});

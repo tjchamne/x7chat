@@ -134,6 +134,7 @@
 	$output = array();
 	
 	$do_resync = false;
+	$filter_resync = false;
 	foreach($events as $key => $event)
 	{
 		$events[$key]['timestamp'] = strtotime($event['timestamp']);
@@ -148,6 +149,12 @@
 		{
 			$_SESSION['last_global_sync_time'] = time();
 			$do_resync = true;
+			unset($events[$key]);
+		}
+		
+		if($event['message_type'] == 'filter_resync')
+		{
+			$filter_resync = true;
 			unset($events[$key]);
 		}
 		
@@ -170,6 +177,21 @@
 	}
 	
 	$output['events'] = $events;
+	
+	if($filter_resync)
+	{
+		$sql = "
+			SELECT
+				*
+			FROM {$x7->dbprefix}word_filters
+			ORDER BY
+				LENGTH(word) DESC
+		";
+		$st = $db->prepare($sql);
+		$st->execute();
+		$filters = $st->fetchAll();
+		$output['filters'] = $filters;
+	}
 	
 	if($do_resync)
 	{
