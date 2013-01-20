@@ -40,4 +40,4 @@
 	}
 	
 	$x7->set_message($x7->lang('filter_deleted'), 'notice');
-	$x7->go('admin_word_filter');
+	$x7->go('admin_list_word_filters');

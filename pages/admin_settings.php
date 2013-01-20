@@ -1,5 +1,6 @@
 <?php
 	$x7->load('user');
+	$x7->load('admin');
 	
 	$db = $x7->db();
 	
@@ -33,7 +34,7 @@
 	}
 	
 	$x7->display('pages/admin/settings', array(
-		'page' => 'admin_settings',
 		'config' => $config,
 		'rooms' => $rooms,
+		'menu' => generate_admin_menu('settings'),
 	));

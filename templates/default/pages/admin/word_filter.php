@@ -20,7 +20,7 @@
 					<td><?php $esc($filter['replacement']); ?></td>
 					<td><?php $filter['whole_word_only'] ? $lang('yes') : $lang('no'); ?></td>
 					<td>
-						<a href="#" data-href="admin_edit_filter&id=<?php echo $filter['id']; ?>"><?php $lang('edit'); ?></a> | <a href="#" data-href="admin_delete_filter&id=<?php echo $filter['id']; ?>"><?php $lang('delete'); ?></a>
+						<a href="#" data-href="admin_edit_word_filter&id=<?php echo $filter['id']; ?>"><?php $lang('edit'); ?></a> | <a href="#" data-href="admin_delete_word_filter&id=<?php echo $filter['id']; ?>"><?php $lang('delete'); ?></a>
 					</td>
 				</tr>
 			<?php endforeach; ?>

@@ -1,5 +1,6 @@
 <?php
 	$x7->load('user');
+	$x7->load('admin');
 	
 	$db = $x7->db();
 	
@@ -35,6 +36,6 @@
 	}
 	
 	$x7->display('pages/admin/edit_word_filter', array(
-		'page' => $id ? 'admin_edit_filter' : 'admin_add_filter',
+		'menu' => generate_admin_menu($id ? 'edit_word_filter' : 'create_word_filter'),
 		'filter' => $filter,
 	));

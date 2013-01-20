@@ -1,5 +1,6 @@
 <?php
 	$x7->load('user');
+	$x7->load('admin');
 	
 	$db = $x7->db();
 	
@@ -47,5 +48,5 @@
 	
 	$x7->display('pages/admin/edit_room', array(
 		'room' => $room,
-		'page' => $room_id ? 'admin_edit_room' : 'admin_create_room',
+		'menu' => generate_admin_menu($room_id ? 'edit_room' : 'create_room'),
 	));

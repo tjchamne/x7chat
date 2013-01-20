@@ -41,7 +41,7 @@
 	if(!$room && $room_id)
 	{
 		$x7->set_message($x7->lang('room_not_found'));
-		$x7->get('admin_rooms');
+		$x7->go('admin_list_rooms');
 	}
 	
 	$fail = false;
@@ -133,7 +133,7 @@
 		$st->execute($params);
 		
 		$x7->set_message($x7->lang('room_updated'), 'notice');
-		$x7->go('admin_rooms');
+		$x7->go('admin_list_rooms');
 	}
 	else
 	{

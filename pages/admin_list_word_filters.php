@@ -1,5 +1,6 @@
 <?php
 	$x7->load('user');
+	$x7->load('admin');
 	
 	$db = $x7->db();
 	
@@ -21,6 +22,6 @@
 	$filters = $st->fetchAll();
 	
 	$x7->display('pages/admin/word_filter', array(
-		'page' => 'admin_word_filter',
 		'filters' => $filters,
+		'menu' => generate_admin_menu('list_word_filters'),
 	));

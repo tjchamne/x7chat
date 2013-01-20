@@ -1,4 +1,4 @@
-<form class="standard_form" data-action="do_admin_save_filter">
+<form class="standard_form" data-action="do_admin_save_word_filter">
 	<?php if($val('filter.id')): ?>
 		<input type="hidden" name="id" value="<?php $esc($val('filter.id')); ?>" />
 	<?php endif; ?>

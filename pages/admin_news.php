@@ -1,5 +1,6 @@
 <?php
 	$x7->load('user');
+	$x7->load('admin');
 	
 	$db = $x7->db();
 	
@@ -36,5 +37,5 @@
 		'cur_stable' => $cur_stable,
 		'cur_unstable' => $cur_unstable,
 		'news' => $news,
-		'page' => 'admin_news',
+		'menu' => generate_admin_menu('news'),
 	));

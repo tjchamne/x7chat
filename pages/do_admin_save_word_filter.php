@@ -38,7 +38,7 @@
 	
 	if($error)
 	{
-		$x7->go('admin_edit_filter', array('filter' => $_POST));
+		$x7->go('admin_edit_word_filter', array('filter' => $_POST));
 	}
 	else
 	{
@@ -77,5 +77,5 @@
 		));
 		
 		$x7->set_message($x7->lang('admin_filter_updated'), 'notice');
-		$x7->go('admin_word_filter');
+		$x7->go('admin_list_word_filters');
 	}

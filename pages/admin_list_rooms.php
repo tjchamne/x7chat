@@ -1,5 +1,6 @@
 <?php
 	$x7->load('user');
+	$x7->load('admin');
 	
 	$db = $x7->db();
 	
@@ -46,11 +47,11 @@
 	
 	$x7->display('pages/admin/rooms', array(
 		'rooms' => $rooms,
-		'page' => 'admin_rooms',
 		'paginator' => array(
 			'per_page' => $per_page,
 			'pages' => $pages,
 			'page' => $page,
 			'action' => 'admin_rooms',
 		),
+		'menu' => generate_admin_menu('list_rooms'),
 	));
