@@ -7,16 +7,20 @@
 		<i><?php $lang('no_rooms'); ?></i>
 	<?php else: ?>
 		<table class="data_table" cellspacing="0" cellpadding="0">
-			<tr>
-				<th><?php $lang('room_name'); ?></th>
-				<th><?php $lang('actions'); ?></th>
-			</tr>
-			<?php foreach($rooms as $room): ?>
+			<thead>
 				<tr>
-					<td><?php $esc($room['name']); ?></td>
-					<td><a href="#" data-href="admin_edit_room&room_id=<?php echo $room['id']; ?>"><?php $lang('edit'); ?></a></td>
+					<th><?php $lang('room_name'); ?></th>
+					<th><?php $lang('actions'); ?></th>
 				</tr>
-			<?php endforeach; ?>
+			</thead>
+			<tbody>
+				<?php foreach($rooms as $room): ?>
+					<tr>
+						<td><?php $esc($room['name']); ?></td>
+						<td><a href="#" data-href="admin_edit_room&room_id=<?php echo $room['id']; ?>"><?php $lang('edit'); ?></a></td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
 		</table>
 	<?php endif; ?>
 </div>

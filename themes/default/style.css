@@ -106,16 +106,36 @@ label
 	font-weight: bold;
 }
 
-ul.errors
+ul.errors,
+ul.notices
 {
 	list-style: none;
 	padding: 0px;
-	margin: 0px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	background: #FFFFFF;
+}
+
+ul.notices
+{
+	border: 1px solid green;
+}
+
+ul.errors
+{
+	border: 1px solid red;
+}
+
+li.notice
+{
+	color: green;
+	padding: 5px;
 }
 
 li.error
 {
 	color: red;
+	padding: 5px;
 }
 
 a,

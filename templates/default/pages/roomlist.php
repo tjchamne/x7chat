@@ -1,18 +1,22 @@
 <div id="title_def"><?php $lang('roomlist_title'); ?></div>
 <?php $lang('roomlist_instructions'); ?>
 <table class="data_table" cellspacing="0" cellpadding="0">
-	<tr>
-		<th><?php $lang('room_name'); ?></th>
-		<th><?php $lang('room_topic'); ?></th>
-		<th><?php $lang('room_actions'); ?></th>
-	</tr>
-	<?php foreach($rooms as $room): ?>
+	<thead>
 		<tr>
-			<td><?php $esc($room['name']); ?></td>
-			<td><?php $esc($room['topic']); ?></td>
-			<td><a href='#' class='join_room_button' data-room-id='<?php echo $room['id']; ?>'><?php $lang('join_room'); ?></a></td>
+			<th><?php $lang('room_name'); ?></th>
+			<th><?php $lang('room_topic'); ?></th>
+			<th><?php $lang('room_actions'); ?></th>
 		</tr>
-	<?php endforeach; ?>
+	</thead>
+	<tbody>
+		<?php foreach($rooms as $room): ?>
+			<tr>
+				<td><?php $esc($room['name']); ?></td>
+				<td><?php $esc($room['topic']); ?></td>
+				<td><a href='#' class='join_room_button' data-room-id='<?php echo $room['id']; ?>'><?php $lang('join_room'); ?></a></td>
+			</tr>
+		<?php endforeach; ?>
+	</tbody>
 </table>
 
 <script type="text/javascript">
