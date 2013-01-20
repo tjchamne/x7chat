@@ -174,6 +174,11 @@
 				die(json_encode(array('redirect' => $x7->url('login'))));
 			}
 		}
+		
+		if($event['message_type'] == 'logout')
+		{
+			die(json_encode(array('redirect' => $x7->url('leaverooms'))));
+		}
 	}
 	
 	$output['events'] = $events;

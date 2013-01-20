@@ -504,3 +504,16 @@ ul.sidemenu li.active ul li
 	font-weight: bold;
 	color: red;
 }
+
+p.paginator
+{
+	margin: 5px;
+	display: block;
+	font-size: 16px;
+}
+
+p.paginator a.current_page
+{
+	font-weight: bold;
+	color: black;
+}

@@ -2,7 +2,6 @@
 <?php $display('layout/adminmenu'); ?>
 <div id="admin_content">
 	<?php $display('layout/messages'); ?>
-	<?php $display('layout/paginator', array('data' => $paginator)); ?>
 	<?php if(empty($rooms)): ?>
 		<i><?php $lang('no_rooms'); ?></i>
 	<?php else: ?>
@@ -23,4 +22,5 @@
 			</tbody>
 		</table>
 	<?php endif; ?>
+	<!--<?php $display('layout/paginator', array('data' => $paginator)); ?>-->
 </div>

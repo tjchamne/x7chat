@@ -220,9 +220,9 @@
 				echo htmlentities($value, ENT_QUOTES, 'UTF-8');
 			};
 			
-			$lang = function($string) use($x7)
+			$lang = function($string, $vars = array()) use($x7)
 			{
-				echo $x7->lang($string);
+				echo $x7->lang($string, $vars);
 			};
 			
 			$url = function($string) use($x7)

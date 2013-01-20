@@ -1,5 +1,26 @@
 <?php
 
+	function force_admin_access($page)
+	{
+		global $x7;
+		
+		if(empty($_SESSION['user_id']))
+		{
+			$x7->fatal_error($x7->lang('login_required'));
+			exit;
+		}
+		
+		$user = new x7_user();
+		$perms = $user->permissions();
+		if(empty($perms['access_admin_panel']))
+		{
+			$x7->fatal_error($x7->lang('access_denied'));
+			exit;
+		}
+		
+		return $user;
+	}
+
 	function generate_admin_menu($current_page)
 	{
 		global $x7;
@@ -31,6 +52,9 @@
 						'href' => 'admin_edit_user',
 					),
 					'edit_user' => array(
+						'hidden' => true,
+					),
+					'delete_user' => array(
 						'hidden' => true,
 					),
 				),
