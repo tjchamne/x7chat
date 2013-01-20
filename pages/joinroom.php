@@ -54,6 +54,23 @@
 		}
 	}
 	
+	$_SESSION['last_local_sync_time'] = time();
+		
+	$sql = "
+		UPDATE {$x7->dbprefix}users
+		SET
+			timestamp = :timestamp,
+			ip = :ip
+		WHERE
+			id = :user_id
+	";
+	$st = $db->prepare($sql);
+	$st->execute(array(
+		':user_id' => $user_id,
+		':timestamp' => date('Y-m-d H:i:s'),
+		':ip' => $_SERVER['REMOTE_ADDR'],
+	));
+	
 	$sql = "
 		INSERT IGNORE INTO {$x7->dbprefix}room_users (user_id, room_id) VALUES (:user_id, :room_id)
 	";
@@ -121,11 +138,19 @@
 			message.dest_type = 'room'
 			AND message.dest_id = :room_id
 			AND message.message_type = 'message'
+		ORDER BY message.id DESC
 		LIMIT 20;
 	";
 	$st = $db->prepare($sql);
 	$st->execute(array(':room_id' => $room_id));
 	$messages = $st->fetchAll();
+	
+	$messages = array_reverse($messages);
+	foreach($messages as &$message)
+	{
+		$message['timestamp'] = strtotime($message['timestamp']);
+	}
+	unset($message);
 	
 	if(!isset($_SESSION['rooms']) || !in_array($room_id, $_SESSION['rooms']))
 	{

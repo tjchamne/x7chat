@@ -189,7 +189,7 @@
 									source_id: '0',
 									dest_type: rooms[key].type, 
 									dest_id: rooms[key].id, 
-									message: <?php echo json_encode($x7->lang('leave_message')); ?>.replace(':user', user_room.user_name)
+									message: <?php echo json_encode($x7->lang('leave_message')); ?>.replace(':user', user.user_name)
 								});
 								
 								app.add_message(message);
@@ -544,7 +544,16 @@
 				
 				$("#content_page *[data-href]").each(function() {
 					$(this).bind('click', function() {
-						open_content_area('?page=' + $(this).attr('data-href'));
+						var url = $(this).attr('data-href');
+						var page = url;
+						var query = '';
+						if(url.indexOf('?') >= 0)
+						{
+							page = url.substring(0, url.indexOf('?'));
+							query = url.substring(url.indexOf('?')+1);
+						}
+						
+						open_content_area('?page=' + page + '&' + query);
 						return false;
 					});
 				});
