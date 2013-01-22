@@ -1,4 +1,6 @@
 <?php
+	$x7->load('user');
+
 	$db = $x7->db();
 	
 	if(empty($_SESSION['user_id']))
@@ -10,25 +12,33 @@
 	
 	$sql = "
 		SELECT
-			username,
-			real_name, 
-			about, 
-			gender,
-			email,
-			enable_sounds
-		FROM {$x7->dbprefix}users
-		WHERE
-			id = :user_id
+			*
+		FROM {$x7->dbprefix}message_fonts
 	";
 	$st = $db->prepare($sql);
-	$st->execute(array(
-		'user_id' => $user_id,
-	));
-	$user = $st->fetch();
+	$st->execute();
+	$fonts = $st->fetchAll();
+	
+	$user = new x7_user();
+	
+	$vals = $x7->get_vars();
+	if($vals)
+	{
+		$defaults = $vals;
+	}
+	else
+	{
+		$defaults = $user->data();
+	}
 	
 	$genders = array(
 		'male' => $x7->lang('male'),
 		'female' => $x7->lang('female'),
 	);
 	
-	$x7->display('pages/settings', array('genders' => $genders, 'user' => $user));
+	$x7->display('pages/settings', array(
+		'genders' => $genders, 
+		'user' => $defaults,
+		'settings' => $user->get_settings(),
+		'fonts' => $fonts,
+	));

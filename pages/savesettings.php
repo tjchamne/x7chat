@@ -20,15 +20,21 @@
 		'user_id' => $user_id,
 	));
 	$user = $st->fetch();
+	$st->closeCursor();
 	
 	$email = isset($_POST['email']) ? $_POST['email'] : '';
 	$real_name = isset($_POST['real_name']) ? $_POST['real_name'] : '';
 	$bio = isset($_POST['bio']) ? $_POST['bio'] : '';
 	$enable_sounds = isset($_POST['enable_sounds']) ? $_POST['enable_sounds'] : '';
+	$enable_styles = isset($_POST['enable_styles']) ? $_POST['enable_styles'] : '';
 	$gender = isset($_POST['gender']) ? $_POST['gender'] : '';
 	$current_password = isset($_POST['current_password']) ? $_POST['current_password'] : '';
 	$new_password = isset($_POST['new_password']) ? $_POST['new_password'] : '';
 	$retype_new_password = isset($_POST['retype_new_password']) ? $_POST['retype_new_password'] : '';
+	
+	$message_font_size = isset($_POST['message_font_size']) ? (int)$_POST['message_font_size'] : '';
+	$message_font_color = isset($_POST['message_font_color']) ? $_POST['message_font_color'] : '';
+	$message_font_face = isset($_POST['message_font_face']) ? (int)$_POST['message_font_face'] : '';
 	
 	$data = array(
 		':user_id' => $user_id,
@@ -36,13 +42,72 @@
 		':bio' => $bio, 
 		':gender' => $gender,
 		':enable_sounds' => (bool)$enable_sounds,
+		':enable_styles' => (bool)$enable_styles,
+		':message_font_size' => $message_font_size,
+		':message_font_color' => $message_font_color,
+		':message_font_face' => $message_font_face,
 	);
 	
 	$fields = '';
 	
 	$priv_change = false;
 	$fail = false;
-
+	
+	if($message_font_size)
+	{
+		$min_font_size = $x7->config('min_font_size');
+		$max_font_size = $x7->config('max_font_size');
+		
+		if($message_font_size < $min_font_size)
+		{
+			$fail = true;
+			$x7->set_message($x7->lang('min_font_size_error', array(
+				':size' => $min_font_size,
+			)));
+		}
+		
+		if($message_font_size > $max_font_size)
+		{
+			$fail = true;
+			$x7->set_message($x7->lang('max_font_size_error', array(
+				':size' => $max_font_size,
+			)));
+		}
+	}
+	
+	if($message_font_face)
+	{
+		$sql = "
+			SELECT
+				*
+			FROM {$x7->dbprefix}message_fonts
+			WHERE
+				id = :id
+			LIMIT 1;
+		";
+		$st = $db->prepare($sql);
+		$st->execute(array(
+			':id' => $message_font_face,
+		));
+		$font = $st->fetchAll();
+		$st->closeCursor();
+		
+		if(!$font)
+		{
+			$fail = true;
+			$x7->set_message($x7->lang('font_face_error'));
+		}
+	}
+	
+	if($message_font_color)
+	{
+		if(!preg_match('#^[A-F0-9]{6}$#i', $message_font_color))
+		{
+			$fail = true;
+			$x7->set_message($x7->lang('color_error'));
+		}
+	}
+	
 	if($user['email'] != $user['username'])
 	{
 		require('./includes/libraries/phpass/PasswordHash.php');
@@ -86,7 +151,11 @@
 				real_name = :real_name,
 				about = :bio,
 				gender = :gender,
-				enable_sounds = :enable_sounds
+				enable_sounds = :enable_sounds,
+				enable_styles = :enable_styles,
+				message_font_size = :message_font_size,
+				message_font_color = :message_font_color,
+				message_font_face = :message_font_face
 				{$fields}
 			WHERE
 				id = :user_id
@@ -99,6 +168,6 @@
 	}
 	else
 	{
-		$x7->go('settings');
+		$x7->go('settings', $_POST);
 	}
 	

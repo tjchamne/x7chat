@@ -1,4 +1,9 @@
 <?php $display('layout/header'); ?>
+	<?php if(!empty($news)): ?>
+		<div class='login_page_news'>
+			<?php echo nl2br($news); ?>
+		</div>
+	<?php endif; ?>
 	<p><?php $lang('login_instructions'); ?></p>
 	<form action="<?php $url('dologin'); ?>" method="post">
 		<label for="username"><?php $lang('username_label'); ?></label>

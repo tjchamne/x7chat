@@ -61,6 +61,29 @@
 	$config['smtp_pass'] = isset($_POST['smtp_pass']) ? $_POST['smtp_pass'] : '';
 	$config['smtp_mode'] = isset($_POST['smtp_mode']) ? $_POST['smtp_mode'] : '';
 	
+	$config['login_page_news'] = isset($_POST['login_page_news']) ? $_POST['login_page_news'] : '';
+	
+	$config['min_font_size'] = isset($_POST['min_font_size']) ? (int)$_POST['min_font_size'] : '';
+	$config['max_font_size'] = isset($_POST['max_font_size']) ? (int)$_POST['max_font_size'] : '';
+	
+	if($config['min_font_size'] > $config['max_font_size'])
+	{
+		$x7->set_message($x7->lang('invalid_min_max_font_sizes'));
+		$error = true;
+	}
+	
+	if($config['min_font_size'] < 1)
+	{
+		$x7->set_message($x7->lang('invalid_min_font_sizes'));
+		$error = true;
+	}
+	
+	if($config['max_font_size'] > 100)
+	{
+		$x7->set_message($x7->lang('invalid_max_font_sizes'));
+		$error = true;
+	}
+	
 	if($error)
 	{
 		$x7->go('admin_settings', array('config' => $_POST));
@@ -78,7 +101,10 @@
 				smtp_port = :smtp_port,
 				smtp_mode = :smtp_mode,
 				from_address = :from_address,
-				allow_guests = :allow_guests
+				allow_guests = :allow_guests,
+				min_font_size = :min_font_size,
+				max_font_size = :max_font_size,
+				login_page_news = :login_page_news
 			LIMIT 1;
 		";
 		$st = $db->prepare($sql);
@@ -93,6 +119,9 @@
 			':smtp_mode' => $config['smtp_mode'],
 			':from_address' => $config['from_address'],
 			':allow_guests' => $config['allow_guests'],
+			':min_font_size' => $config['min_font_size'],
+			':max_font_size' => $config['max_font_size'],
+			':login_page_news' => $config['login_page_news'],
 		));
 	
 		$x7->set_message($x7->lang('admin_settings_updated'), 'notice');

@@ -1,4 +1,6 @@
 <?php
+	$x7->load('user');
+
 	$db = $x7->db();
 	
 	if(empty($_SESSION['user_id']))
@@ -14,8 +16,68 @@
 	
 	$user_id = $_SESSION['user_id'];
 	
+	$user = new x7_user();
+	$user_data = $user->data();
+	$font_color = $user_data['message_font_color'];
+	$font_size = $user_data['message_font_size'];
+	$font_face = $user_data['message_font_face'];
+	
+	if($font_face)
+	{
+		if(!isset($_SESSION['cache']['font_face'][$font_face]))
+		{
+			$sql = "
+				SELECT
+					font
+				FROM {$x7->dbprefix}message_fonts
+				WHERE
+					id = :id
+				LIMIT 1;
+			";
+			$st = $db->prepare($sql);
+			$st->execute(array(
+				':id' => $font_face,
+			));
+			$face = $st->fetch();
+			$st->closeCursor();
+			
+			if($face)
+			{
+				$_SESSION['cache']['font_face'][$font_face] = $face['font'];
+			}
+			else
+			{
+				$_SESSION['cache']['font_face'][$font_face] = '';
+			}
+		}
+		
+		$font_face = $_SESSION['cache']['font_face'][$font_face];
+	}
+	
 	$sql = "
-		INSERT INTO {$x7->dbprefix}messages (timestamp, message_type, dest_type, dest_id, source_type, source_id, message) VALUES (:timestamp, :message_type, :dest_type, :dest_id, :source_type, :source_id, :message)
+		INSERT INTO {$x7->dbprefix}messages (
+			timestamp, 
+			message_type, 
+			dest_type, 
+			dest_id, 
+			source_type, 
+			source_id, 
+			message,
+			font_size,
+			font_color,
+			font_face
+		) VALUES (
+			:timestamp, 
+			:message_type, 
+			:dest_type, 
+			:dest_id, 
+			:source_type, 
+			:source_id, 
+			:message,
+			:font_size,
+			:font_color,
+			:font_face
+		)
 	";
 	$st = $db->prepare($sql);
 	$st->execute(array(
@@ -26,4 +88,7 @@
 		':dest_id' => $room_id, 
 		':source_type' => 'user', 
 		':source_id' => $user_id,
+		':font_size' => $font_size,
+		':font_color' => $font_color,
+		':font_face' => $font_face
 	));

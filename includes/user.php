@@ -41,6 +41,37 @@
 			$this->loaded = false;
 		}
 		
+		public function get_settings()
+		{
+			$data = $this->data();
+			
+			$keys = array(
+				'enable_sounds',
+				'use_default_timestamp_settings',
+				'enable_timestamps',
+				'ts_24_hour',
+				'ts_show_seconds',
+				'ts_show_ampm',
+				'ts_show_date',
+				'enable_styles',
+				'message_font_size',
+				'message_font_color',
+				'message_font_face',
+			);
+			
+			$settings = array();
+			foreach($keys as $key)
+			{
+				$settings[$key] = $data[$key];
+				if(!$settings[$key])
+				{
+					$settings[$key] = false;
+				}
+			}
+			
+			return $settings;
+		}
+		
 		public function data()
 		{
 			$this->load();

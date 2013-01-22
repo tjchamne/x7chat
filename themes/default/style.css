@@ -517,3 +517,20 @@ p.paginator a.current_page
 	font-weight: bold;
 	color: black;
 }
+
+.login_page_news
+{
+	float: right;
+	width: 50%;
+}
+
+.multi_checkbox
+{
+	display: inline-block;
+	margin-bottom: 5px;
+}
+
+form.standard_form div.multi_checkbox label
+{
+	width: 400px;
+}

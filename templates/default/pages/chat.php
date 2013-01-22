@@ -6,7 +6,8 @@
 		{
 			var app = this;
 			
-			this.enable_sounds = <?php echo (int)$user['enable_sounds']; ?>;
+			this.settings = <?php echo json_encode($settings); ?>;
+			
 			this.filters = <?php echo json_encode($filters); ?>;
 		
 			this.Room = function(room)
@@ -61,6 +62,36 @@
 				this.dest_type = message.dest_type;
 				this.dest_id = message.dest_id;
 				this.raw_message = message.message;
+				
+				this.size = '';
+				if(!app.settings.enable_styles)
+				{
+					this.size = app.settings.message_font_size;
+				}
+				else if(message.font_size)
+				{
+					this.size = message.font_size;
+				}
+				
+				this.face = '';
+				if(!app.settings.enable_styles)
+				{
+					this.face = app.settings.message_font_face;
+				}
+				else if(message.font_face)
+				{
+					this.face = message.font_face;
+				}
+				
+				this.color = '';
+				if(!app.settings.enable_styles)
+				{
+					this.color = app.settings.message_font_color;
+				}
+				else if(message.font_color)
+				{
+					this.color = message.font_color;
+				}
 				
 				var filtered_message = message.message;
 				for(var key in app.filters)
@@ -291,7 +322,7 @@
 				}
 				
 				// play sounds
-				if(app.enable_sounds && !supress_sounds)
+				if(app.settings.enable_sounds && !supress_sounds)
 				{
 					try
 					{
@@ -315,7 +346,10 @@
 					source_id: '<?php $esc($user['id']); ?>',
 					dest_type: app.active_room().type, 
 					dest_id: app.active_room().id, 
-					message: $('#message_input').val()
+					message: $('#message_input').val(),
+					font_size: app.settings.message_font_size,
+					font_color: app.settings.message_font_color,
+					font_face: app.settings.message_font_face
 				});
 				
 				app.add_message(message, 1);
@@ -647,7 +681,7 @@
 					<div class="message_container"><span class="timestamp" data-bind="text: timestamp"></span>
 						<!-- ko if: source_type != 'system' -->
 							<span class="sender" data-bind="text: source_name + ':'"></span> 
-							<span class="message" data-bind="text: message"></span>
+							<span class="message" data-bind="text: message, style: { color: color ? '#' + color : '', fontSize: size > 0 ? size + 'px' : '', fontFamily: face ? face : ''}"></span>
 						<!-- /ko -->
 						<!-- ko if: source_type == 'system' -->
 							<span class="sender system_sender"><?php $lang('system_sender'); ?>: </span>

@@ -20,6 +20,18 @@
 		<input type="checkbox" name="allow_guests" id="allow_guests" <?php if($config['allow_guests']) echo "checked"; ?> />
 		<p><?php $lang('allow_guests_instr'); ?></p>
 		
+		<label for="login_page_news"><?php $lang('login_page_news'); ?></label>
+		<textarea name="login_page_news" id="login_page_news" rows="5" cols="25"><?php $esc($config['login_page_news']); ?></textarea>
+		<p><?php $lang('login_page_news_instr'); ?></p>
+		
+		<label for="min_font_size"><?php $lang('min_font_size'); ?></label>
+		<input type="text" name="min_font_size" id="min_font_size" value="<?php $esc($config['min_font_size']); ?>" />
+		<p><?php $lang('min_font_size_instr'); ?></p>
+		
+		<label for="max_font_size"><?php $lang('max_font_size'); ?></label>
+		<input type="text" name="max_font_size" id="max_font_size" value="<?php $esc($config['max_font_size']); ?>" />
+		<p><?php $lang('max_font_size_instr'); ?></p>
+		
 		<label for="from_address"><?php $lang('from_address'); ?></label>
 		<input type="text" name="from_address" id="from_address" value="<?php $esc($config['from_address']); ?>" />
 		<p><?php $lang('from_address_instr'); ?></p>
