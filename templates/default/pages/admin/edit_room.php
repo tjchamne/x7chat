@@ -2,7 +2,7 @@
 <?php $display('layout/adminmenu'); ?>
 <div id="admin_content">
 	<?php $display('layout/messages'); ?>
-	<?php $display('layout/paginator', array('data' => $paginator)); ?>
+	<?php $display('layout/paginator', array('data' => isset($paginator) ? $paginator : array())); ?>
 	<form class="standard_form" data-action="do_admin_edit_room">
 		<input type="hidden" name="room_id" id="room_id" value="<?php $esc($val('room.id')); ?>" />
 

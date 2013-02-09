@@ -2,7 +2,7 @@
 <?php $display('layout/adminmenu'); ?>
 <div id="admin_content">
 	<?php $display('layout/messages'); ?>
-	<?php $display('layout/paginator', array('data' => $paginator)); ?>
+	<?php $display('layout/paginator', array('data' => isset($paginator) ? $paginator : array())); ?>
 	
 	<?php if(!$filters): ?>
 		<p><?php $lang('no_word_filters_defined'); ?></p>
