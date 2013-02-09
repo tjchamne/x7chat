@@ -1,6 +1,9 @@
 <?php
 
 	date_default_timezone_set('UTC');
+	
+	error_reporting(E_ALL);
+	ini_set('display_errors', 'off');
 
 	$config = require('./config.php');
 	if(!is_array($config))
@@ -29,7 +32,7 @@
 		{
 			$user_banned = false;
 			
-			if($_SESSION['user_id'])
+			if(!empty($_SESSION['user_id']))
 			{
 				$_SESSION = array();
 				session_destroy();
