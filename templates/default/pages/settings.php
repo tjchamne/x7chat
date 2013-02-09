@@ -54,8 +54,10 @@
 		<input type="checkbox" name="ts_show_seconds" id="ts_show_seconds" value="1" <?php if($user['ts_show_seconds']) echo 'checked'; ?>> <label for="ts_show_seconds"><?php $lang('ts_show_seconds'); ?></label>
 		<br />
 		<input type="checkbox" name="ts_show_ampm" id="ts_show_ampm" value="1" <?php if($user['ts_show_ampm']) echo 'checked'; ?>> <label for="ts_show_ampm"><?php $lang('ts_show_ampm'); ?></label>
+		<!--
 		<br />
 		<input type="checkbox" name="ts_show_date" id="ts_show_date" value="1" <?php if($user['ts_show_date']) echo 'checked'; ?>> <label for="ts_show_date"><?php $lang('ts_show_date'); ?></label>
+		-->
 	</div>
 	<p>&nbsp;</p>
 	

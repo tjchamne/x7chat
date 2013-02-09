@@ -36,6 +36,13 @@
 	$message_font_color = isset($_POST['message_font_color']) ? $_POST['message_font_color'] : '';
 	$message_font_face = isset($_POST['message_font_face']) ? (int)$_POST['message_font_face'] : '';
 	
+	$use_default_timestamp_settings = isset($_POST['use_default_timestamp_settings']) ? (int)$_POST['use_default_timestamp_settings'] : '';
+	$enable_timestamps = isset($_POST['enable_timestamps']) ? $_POST['enable_timestamps'] : '';
+	$ts_24_hour = isset($_POST['ts_24_hour']) ? (int)$_POST['ts_24_hour'] : '';
+	$ts_show_seconds = isset($_POST['ts_show_seconds']) ? (int)$_POST['ts_show_seconds'] : '';
+	$ts_show_ampm = isset($_POST['ts_show_ampm']) ? $_POST['ts_show_ampm'] : '';
+	$ts_show_date = isset($_POST['ts_show_date']) ? (int)$_POST['ts_show_date'] : '';
+	
 	$data = array(
 		':user_id' => $user_id,
 		':real_name' => $real_name, 
@@ -46,6 +53,12 @@
 		':message_font_size' => $message_font_size,
 		':message_font_color' => $message_font_color,
 		':message_font_face' => $message_font_face,
+		':use_default_timestamp_settings' => $use_default_timestamp_settings,
+		':enable_timestamps' => $enable_timestamps,
+		':ts_24_hour' => $ts_24_hour,
+		':ts_show_seconds' => $ts_show_seconds,
+		':ts_show_ampm' => $ts_show_ampm,
+		':ts_show_date' => $ts_show_date,
 	);
 	
 	$fields = '';
@@ -155,7 +168,13 @@
 				enable_styles = :enable_styles,
 				message_font_size = :message_font_size,
 				message_font_color = :message_font_color,
-				message_font_face = :message_font_face
+				message_font_face = :message_font_face,
+				use_default_timestamp_settings = :use_default_timestamp_settings,
+				enable_timestamps = :enable_timestamps,
+				ts_24_hour = :ts_24_hour,
+				ts_show_seconds = :ts_show_seconds,
+				ts_show_ampm = :ts_show_ampm,
+				ts_show_date = :ts_show_date
 				{$fields}
 			WHERE
 				id = :user_id

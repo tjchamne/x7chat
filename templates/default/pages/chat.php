@@ -33,19 +33,29 @@
 				var dt = new Date();
 				dt.setTime((parseInt(message.timestamp))*1000);
 				
-				var ampm = 'am';
+				var ampm = '';
+				ampm = ' am';
 				var hours = dt.getHours();
 				if(hours >= 12)
 				{
-					ampm = 'pm';
+					ampm = ' pm';
 				}
-				if(hours > 12)
+				
+				if(!app.settings.ts_24_hour || app.settings.use_default_timestamp_settings)
 				{
-					hours -= 12;
+					if(hours > 12)
+					{
+						hours -= 12;
+					}
+					if(hours == 0)
+					{
+						hours = 12;
+					}
 				}
-				if(hours == 0)
+				
+				if(!app.settings.ts_show_ampm && !app.settings.use_default_timestamp_settings)
 				{
-					hours = 12;
+					ampm = '';
 				}
 				
 				var minutes = ''+dt.getMinutes();
@@ -54,7 +64,25 @@
 					minutes = '0' + minutes;
 				}
 				
-				this.timestamp = hours + ":" + minutes;
+				var seconds = ''+dt.getSeconds();
+				if(seconds.length < 2)
+				{
+					seconds = '0' + seconds;
+				}
+				
+				if(app.settings.enable_timestamps || app.settings.use_default_timestamp_settings)
+				{
+					this.timestamp = hours + ":" + minutes;
+					if(app.settings.ts_show_seconds)
+					{
+						this.timestamp += ":" + seconds;
+					}
+					this.timestamp += ampm;
+				}
+				else
+				{
+					this.timestamp = '';
+				}
 				
 				this.source_type = message.source_type;
 				this.source_id = message.source_id;
