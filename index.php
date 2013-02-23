@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 	date_default_timezone_set('UTC');
 	
@@ -6,10 +6,10 @@
 	ini_set('display_errors', 'off');
 
 	$config = require('./config.php');
-	if(!is_array($config))
+	if(!is_array($config) || empty($config['dbname']))
 	{
-		header('Location: install.php');
-		die("Redirecting to install.php");
+		header('Location: ./install/index.php');
+		die("Redirecting to install/index.php");
 	}
 	
 	require('./includes/x7chat.php');

@@ -19,8 +19,8 @@
 
 	class x7chat
 	{
-		const VERSION = '3.2.0a1';
-		const VERSION_ID = 30200101;
+		const VERSION = '3.2.0a2';
+		const VERSION_ID = 30200102;
 	
 		protected $strings;
 		protected $db;

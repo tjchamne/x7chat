@@ -7,8 +7,8 @@
 *                                                                             *
 *******************************************************************************
 *                                                                             *
-*                Version:           3.2.0a1                                   *
-*                Release Date:      January 5, 2013                           *
+*                Version:           3.2.0a2                                   *
+*                Release Date:      March 5, 2013                             *
 *                Author:            Tim Chamness                              *
 *                Copyright:         2003-2013 by Tim Chamness                 *
 *                Website:           http://www.x7chat.com/                    *
@@ -90,16 +90,19 @@ Client Requirements:
 *                              INSTALLATION                                   *
 *******************************************************************************
 
-Installation steps:
+Installing a new copy of the software:
 	1. Upload all of the X7 Chat files to the server.
 	2. Create a MySQL database and user account.
 	3. Make config.php writable by the web server (optional).
-	4. Visit install.php in your web browser and follow the instructions.
+	4. Visit /index.php in your web browser and follow the instructions.
 	
-Upgrading from a previous version:
-	Upgrading from a previous version of X7 Chat is not supported in this
-	release; however, future releases of X7 Chat 3 will support upgrading from
-	X7 Chat 1 and 2.
+Upgrading from 3.2.X version of the software:
+	1. Upload the new files over top of the old ones, overwriting all files.
+	2. Visit /install/index.php in your web browser and follow the instructions.
+	
+Upgrading from a 2.X or 1.X version of the software:
+	Upgrading from X7 Chat 1.X and 2.X is not supported in this release; however,
+	future releases of X7 Chat 3 will support upgrading from	X7 Chat 1 and 2.
 	
 Integrating with external applications:
 	Integration is not supported in this release; however, future releases of
