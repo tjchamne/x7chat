@@ -1,9 +1,18 @@
 *******************************************************************************
-* 3.02.00a02                                                    March 5, 2013 *
+* 3.02.00a02                                                    March 2, 2013 *
 *******************************************************************************
-- TODO
+- Implemented a new installer with upgrade support (for 3.2.X)
+- Disabled error reporting by default
+- Added timestamp options
+- Added a user manager to the admin panel
+- Added customizable news to the home page
+- Added custom message styles
+- Added a word filter
+- Added notification sounds and messages for entering/leaving rooms
+- Fixed a bug with the handling of the online list
+- Fixed a bug with the initial loading of messages
 
 *******************************************************************************
-* 3.02.00a01                                                  January 5, 2013 *
+* 3.02.00a01                                                  January 9, 2013 *
 *******************************************************************************
 - Initial release

@@ -8,7 +8,7 @@
 *******************************************************************************
 *                                                                             *
 *                Version:           3.2.0a2                                   *
-*                Release Date:      March 5, 2013                             *
+*                Release Date:      March 2, 2013                             *
 *                Author:            Tim Chamness                              *
 *                Copyright:         2003-2013 by Tim Chamness                 *
 *                Website:           http://www.x7chat.com/                    *
@@ -97,7 +97,8 @@ Installing a new copy of the software:
 	4. Visit /index.php in your web browser and follow the instructions.
 	
 Upgrading from 3.2.X version of the software:
-	1. Upload the new files over top of the old ones, overwriting all files.
+	1. Upload the new files over top of the old ones EXCEPT for config.php, 
+	   overwriting all files.
 	2. Visit /install/index.php in your web browser and follow the instructions.
 	
 Upgrading from a 2.X or 1.X version of the software:

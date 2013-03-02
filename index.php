@@ -1,9 +1,9 @@
-﻿<?php
+<?php
 
 	date_default_timezone_set('UTC');
 	
 	error_reporting(E_ALL);
-	ini_set('display_errors', 'off');
+	ini_set('display_errors', 'on');
 
 	$config = require('./config.php');
 	if(!is_array($config) || empty($config['dbname']))

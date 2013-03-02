@@ -165,26 +165,44 @@
 	
 	// Attempt a save of the database connection details
 	$error_message = false;
-	if(!empty($_POST) && $_SESSION['x7chat_install']['step'] === 1 && $_SESSION['x7chat_install']['type'] == 'install')
+	if($_SESSION['x7chat_install']['type'] == 'install' && 
+		(!empty($_POST) && $_SESSION['x7chat_install']['step'] === 1 
+		|| ($_SESSION['x7chat_install']['step'] === 2 && !$db && !empty($_SESSION['x7chat_install']['config_contents']))))
 	{
 		try
 		{
-			$check_db = db_connection($_POST);
-			
-			$_SESSION['x7chat_install']['step'] = 2;
-			
-			$_SESSION['x7chat_install']['config_contents'] = $contents = '<?php return ' . var_export(array(
-				'user' => $_POST['user'],
-				'pass' => $_POST['pass'],
-				'dbname' => $_POST['dbname'],
-				'host' => $_POST['host'],
-				'prefix' => $_POST['prefix'],
-			), 1) . ';';
+			if($_SESSION['x7chat_install']['step'] === 1)
+			{
+				$check_db = db_connection($_POST);
+				
+				$_SESSION['x7chat_install']['config_contents'] = $contents = '<?php return ' . var_export(array(
+					'user' => $_POST['user'],
+					'pass' => $_POST['pass'],
+					'dbname' => $_POST['dbname'],
+					'host' => $_POST['host'],
+					'prefix' => $_POST['prefix'],
+				), 1) . ';';
+			}
+			else
+			{
+				$contents = $_SESSION['x7chat_install']['config_contents'];
+			}
 			
 			if(is_writable('../config.php'))
 			{
-				file_put_contents('../config.php', $contents);
+				$written = file_put_contents('../config.php', $contents);
+				if($written)
+				{
+					$config = require('../config.php');
+					$db = db_connection($config);
+				}
+			} 
+			else
+			{
+				$written = false;
 			}
+			
+			$_SESSION['x7chat_install']['step'] = 2;
 		}
 		catch(Exception $ex)
 		{
@@ -204,6 +222,7 @@
 				run_sql($db, 'new', $config['prefix']);
 				
 				$_SESSION['x7chat_install']['step'] = 3;
+				$_POST = array();
 			}
 			catch(Exception $ex)
 			{
@@ -252,6 +271,12 @@
 					':username' => $_POST['admin_username'],
 					':password' => $phpass->HashPassword($_POST['admin_password']),
 					':email' => $_POST['admin_email'],
+				));
+				
+				$sql = "UPDATE {$config['prefix']}config SET from_address = :from";
+				$st = $db->prepare($sql);
+				$st->execute(array(
+					':from' => $_POST['admin_email'],
 				));
 				
 				$_SESSION['x7chat_install']['step'] = 4;
@@ -416,6 +441,7 @@
 								<h1>Configuration File Setup</h1>
 								<p>The configuration file, config.php, could not be created automatically.  Please modify this file and add the following content to it:</p>
 								<pre><?php echo sf($contents); ?></pre>
+								<a href="index.php">Continue</a>
 								
 							<?php elseif($_SESSION['x7chat_install']['step'] === 3): ?>
 								
