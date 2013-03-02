@@ -9,6 +9,7 @@
 			this.settings = <?php echo json_encode($settings); ?>;
 			
 			this.filters = <?php echo json_encode($filters); ?>;
+			this.smilies = <?php echo json_encode($smilies); ?>;
 		
 			this.Room = function(room)
 			{
@@ -142,6 +143,16 @@
 					}
 					
 					var reg = new RegExp(find, "i");
+					filtered_message = filtered_message.replace(reg, repl);
+				}
+				
+				for(var key in app.smilies)
+				{
+					var smiley = app.smilies[key];
+					var find = smiley.token.replace(/([.*+?^=!:${}()|[\]\/\\])/g, "\\$1");
+					console.log(find);
+					var reg = new RegExp(find, "i");
+					var repl = "<img src='" + smiley.image + "' />";
 					filtered_message = filtered_message.replace(reg, repl);
 				}
 				
@@ -709,11 +720,11 @@
 					<div class="message_container"><span class="timestamp" data-bind="text: timestamp"></span>
 						<!-- ko if: source_type != 'system' -->
 							<span class="sender" data-bind="text: source_name + ':'"></span> 
-							<span class="message" data-bind="text: message, style: { color: color ? '#' + color : '', fontSize: size > 0 ? size + 'px' : '', fontFamily: face ? face : ''}"></span>
+							<span class="message" data-bind="html: message, style: { color: color ? '#' + color : '', fontSize: size > 0 ? size + 'px' : '', fontFamily: face ? face : ''}"></span>
 						<!-- /ko -->
 						<!-- ko if: source_type == 'system' -->
 							<span class="sender system_sender"><?php $lang('system_sender'); ?>: </span>
-							<span class="message system_message" data-bind="text: message"></span>
+							<span class="message system_message" data-bind="html: message"></span>
 						<!-- /ko -->
 					</div>
 				</div>

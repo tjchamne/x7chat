@@ -21,6 +21,17 @@
 	$st->execute();
 	$filters = $st->fetchAll();
 	
+	$sql = "
+		SELECT
+			*
+		FROM {$x7->dbprefix}smilies
+		ORDER BY
+			LENGTH(token) DESC
+	";
+	$st = $db->prepare($sql);
+	$st->execute();
+	$smilies = $st->fetchAll();
+	
 	$user = new x7_user();
 	
 	$user_ob = new x7_user();
@@ -39,4 +50,5 @@
 		'access_acp' => $access_acp, 
 		'auto_join' => $auto_join,
 		'filters' => $filters,
+		'smilies' => $smilies,
 	));

@@ -210,9 +210,9 @@
 		'save_user_button' => 'Save User',
 		'admin_user_pass' => 'Leave blank if you do not wish to change this user\'s password.',
 		'user_updated' => 'User updated successfully.',
-		'' => '',
-		'' => '',
-		'' => '',
+		'room_logs' => 'Chat Transcript',
+		'logs_title' => 'Chat Transcript',
+		'no_logs' => 'No logged messages found.',
 		'' => '',
 		'' => '',
 	);
