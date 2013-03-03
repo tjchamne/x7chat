@@ -135,6 +135,7 @@
 	
 	$do_resync = false;
 	$filter_resync = false;
+	$smiley_resync = false;
 	foreach($events as $key => $event)
 	{
 		$events[$key]['timestamp'] = strtotime($event['timestamp']);
@@ -155,6 +156,12 @@
 		if($event['message_type'] == 'filter_resync')
 		{
 			$filter_resync = true;
+			unset($events[$key]);
+		}
+		
+		if($event['message_type'] == 'smiley_resync')
+		{
+			$smiley_resync = true;
 			unset($events[$key]);
 		}
 		
@@ -196,6 +203,21 @@
 		$st->execute();
 		$filters = $st->fetchAll();
 		$output['filters'] = $filters;
+	}
+	
+	if($smiley_resync)
+	{
+		$sql = "
+			SELECT
+				*
+			FROM {$x7->dbprefix}smilies
+			ORDER BY
+				LENGTH(token) DESC
+		";
+		$st = $db->prepare($sql);
+		$st->execute();
+		$smilies = $st->fetchAll();
+		$output['smilies'] = $smilies;
 	}
 	
 	if($do_resync)

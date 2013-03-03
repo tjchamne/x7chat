@@ -43,6 +43,19 @@
 					),
 				),
 			),
+			'smilies' => array(
+				'href' => 'admin_list_smilies',
+				'items' => array(
+					'list_smilies' => array(
+					),
+					'create_smiley' => array(
+						'href' => 'admin_edit_smiley',
+					),
+					'edit_smiley' => array(
+						'hidden' => true,
+					),
+				),
+			),
 			'users' => array(
 				'href' => 'admin_list_users',
 				'items' => array(

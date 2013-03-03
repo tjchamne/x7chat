@@ -534,3 +534,15 @@ form.standard_form div.multi_checkbox label
 {
 	width: 400px;
 }
+
+#smilies
+{
+	float: left;
+	margin-top: 5px;
+	clear: both;
+}
+
+#smilies img
+{
+	margin-right: 5px;
+}

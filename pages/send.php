@@ -58,6 +58,7 @@
 		INSERT INTO {$x7->dbprefix}messages (
 			timestamp, 
 			message_type, 
+			sender_name,
 			dest_type, 
 			dest_id, 
 			source_type, 
@@ -69,6 +70,7 @@
 		) VALUES (
 			:timestamp, 
 			:message_type, 
+			:sender_name,
 			:dest_type, 
 			:dest_id, 
 			:source_type, 
@@ -83,6 +85,7 @@
 	$st->execute(array(
 		':timestamp' => date('Y-m-d H:i:s'), 
 		':message_type' => 'message', 
+		':sender_name' => $user_data['username'],
 		':message' => $message,
 		':dest_type' => $dest_type, 
 		':dest_id' => $room_id, 

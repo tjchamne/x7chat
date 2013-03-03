@@ -9,7 +9,17 @@
 			this.settings = <?php echo json_encode($settings); ?>;
 			
 			this.filters = <?php echo json_encode($filters); ?>;
-			this.smilies = <?php echo json_encode($smilies); ?>;
+			this.smilies = ko.observableArray(<?php echo json_encode($smilies); ?>);
+			
+			this.html_escape = function(text)
+			{
+				return text.replace(/&/g, "&amp;")
+					.replace(/</g, "&lt;")
+					.replace(/>/g, "&gt;")
+					.replace(/"/g, "&quot;")
+					.replace(/'/g, "&#039;")
+					.replace(/\\/g, "&#92;");
+			};
 		
 			this.Room = function(room)
 			{
@@ -123,10 +133,12 @@
 				}
 				
 				var filtered_message = message.message;
+				filtered_message = app.html_escape(filtered_message);
+				
 				for(var key in app.filters)
 				{
 					var filter = app.filters[key];
-					var find = filter.word.replace(/([.*+?^=!:${}()|[\]\/\\])/g, "\\$1");
+					var find = app.html_escape(filter.word).replace(/([.*+?^=!:${}()|[\]\/\\])/g, "\\$1");
 					
 					var repl = filter.replacement;
 					if(!repl.length)
@@ -142,16 +154,15 @@
 						find = "\\b" + find + "\\b";
 					}
 					
-					var reg = new RegExp(find, "i");
+					var reg = new RegExp(find, "ig");
 					filtered_message = filtered_message.replace(reg, repl);
 				}
 				
-				for(var key in app.smilies)
+				for(var key in app.smilies())
 				{
-					var smiley = app.smilies[key];
-					var find = smiley.token.replace(/([.*+?^=!:${}()|[\]\/\\])/g, "\\$1");
-					console.log(find);
-					var reg = new RegExp(find, "i");
+					var smiley = app.smilies()[key];
+					var find = app.html_escape(smiley.token).replace(/([.*+?^=!:${}()|[\]\/\\])/g, "\\$1");
+					var reg = new RegExp(find, "ig");
 					var repl = "<img src='" + smiley.image + "' />";
 					filtered_message = filtered_message.replace(reg, repl);
 				}
@@ -373,6 +384,11 @@
 				}
 			}
 			
+			this.insert_smiley = function(smiley)
+			{
+				$("#message_input").val($("#message_input").val() + smiley.token);
+			}
+			
 			this.send_message = function()
 			{
 				var dt = new Date();
@@ -401,7 +417,7 @@
 					data: {
 						dest_type: message.dest_type,
 						room: message.dest_id,
-						message: message.message
+						message: message.raw_message
 					},
 					success: function(data)
 					{
@@ -538,6 +554,11 @@
 					if(data['filters'])
 					{
 						App.filters = data['filters'];
+					}
+					
+					if(data['smilies'])
+					{
+						App.smilies(data['smilies']);
 					}
 				}
 			});
@@ -735,6 +756,11 @@
 			<div style="clear: both;"></div>
 			<div id="input_form">
 				<textarea id="message_input" data-bind="event: {keypress: message_key}"></textarea>
+				
+				<div id="smilies" data-bind="foreach: smilies()">
+					<a href="#" data-bind="click: $root.insert_smiley"><img data-bind="attr:{src: image}" border="0" /></a>
+				</div>
+				
 				<input type="button" id="send_button" value="<?php $lang('send_button'); ?>" data-bind="click: send_message" />
 				<div style="clear: both;"></div>
 			</div>
