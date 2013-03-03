@@ -1,1 +1,1 @@
-ALTER TABLE `{$PREFIX}messages` ADD `sender_name` VARCHAR( 255 ) NOT NULL AFTER `timestamp`;
+ALTER TABLE `{$prefix}messages` ADD `sender_name` VARCHAR( 255 ) NOT NULL AFTER `timestamp`;
