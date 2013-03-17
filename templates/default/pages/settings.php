@@ -1,10 +1,38 @@
 <div id="title_def"><?php $lang('settings_title'); ?></div>
 <?php $display('layout/messages'); ?>
-<form class="standard_form" id="settings_form">
+<form class="standard_form" id="settings_form" enctype="multipart/form-data" target="submit_iframe" method="post" action="<?php $url('savesettings'); ?>">
 	<h2><?php $lang('profile_settings'); ?></h2>
 	<label for="real_name"><?php $lang('real_name_label'); ?></label>
 	<input type="text" name="real_name" id="real_name" value="<?php $esc($user['real_name']); ?>" />
 	<p>&nbsp;</p>
+	
+	<label for="location"><?php $lang('location_label'); ?></label>
+	<input type="text" name="location" id="location" value="<?php $esc($user['location']); ?>" />
+	<p>&nbsp;</p>
+	
+	<label for="status_description"><?php $lang('status_description_label'); ?></label>
+	<input type="text" name="status_description" id="status_description" value="<?php $esc($user['status_description']); ?>" />
+	<p>&nbsp;</p>
+	
+	<label for="status_type"><?php $lang('status_type_label'); ?></label>
+	<select name="status_type" id="status_type">
+		<option value="available" <?php if($user['status_type'] == 'available') echo 'selected'; ?>><?php $lang('available_option'); ?></option>
+		<option value="busy" <?php if($user['status_type'] == 'busy') echo 'selected'; ?>><?php $lang('busy_option'); ?></option>
+		<option value="away" <?php if($user['status_type'] == 'away') echo 'selected'; ?>><?php $lang('away_option'); ?></option>
+	</select>
+	<p>&nbsp;</p>
+	
+	<label for="avatar"><?php $lang('avatar_label'); ?></label>
+	<div style="display: inline-block;">
+		<?php if($user['avatar']): ?>
+			<img src="uploads/normal_<?php echo $user['avatar']; ?>" />
+			<br />
+			<input type="checkbox" name="remove_avatar" value="1" /><?php $lang('remove_avatar'); ?>
+			<br />
+		<?php endif; ?>
+		<input type="file" name="avatar" id="avatar" />
+	</div>
+	<p style="clear: both;">&nbsp;</p>
 	
 	<label for="gender"><?php $lang('gender_label'); ?></label>
 	<select name="gender" id="gender">
@@ -84,6 +112,7 @@
 	
 	<input type="submit" value="<?php $lang('save_settings_button'); ?>" />
 </form>
+<iframe src="blank.html" id="submit_iframe" name="submit_iframe" height="1" style="visibility: hidden;"></iframe>
 <script type="text/javascript" src="scripts/jscolor/jscolor.js"></script>
 <script type="text/javascript">
 	function update_timestamp_settings()
@@ -117,6 +146,7 @@
 		setTimeout(update_timestamp_settings, 250);
 	});
 
+	/*
 	$("#settings_form").bind('submit', function() {
 		$.post('<?php $url('savesettings'); ?>', $(this).serialize(), function(data) {
 			$('#content_page').html(data);
@@ -124,6 +154,7 @@
 		});
 		return false;
 	});
+	*/
 	
 	var pickers = new jscolor.color($("#message_font_color")[0], {
 		required: false

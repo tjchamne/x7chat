@@ -43,6 +43,39 @@
 	$ts_show_ampm = isset($_POST['ts_show_ampm']) ? $_POST['ts_show_ampm'] : '';
 	$ts_show_date = isset($_POST['ts_show_date']) ? (int)$_POST['ts_show_date'] : '';
 	
+	$location = isset($_POST['location']) ? $_POST['location'] : '';
+	$status_description = isset($_POST['status_description']) ? $_POST['status_description'] : '';
+	
+	$status_type = isset($_POST['status_type']) ? $_POST['status_type'] : 'available';
+	if(!in_array($status_type, array('available', 'busy', 'away')))
+	{
+		$status_type = 'available';
+	}
+	
+	if($status_type != $user['status_type'])
+	{
+		$rooms = isset($_SESSION['rooms']) ? $_SESSION['rooms'] : array();
+		if($rooms)
+		{
+			foreach($rooms as $room)
+			{
+				$sql = "
+					INSERT INTO {$x7->dbprefix}messages (timestamp, message, message_type, dest_type, dest_id, source_type, source_id) VALUES (:timestamp, :message, :message_type, :dest_type, :dest_id, :source_type, :source_id)
+				";
+				$st = $x7->db()->prepare($sql);
+				$st->execute(array(
+					':timestamp' => date('Y-m-d H:i:s'), 
+					':message_type' => 'room_resync', 
+					':message' => 'leave_rooms',
+					':dest_type' => 'room', 
+					':dest_id' => $room, 
+					':source_type' => 'system', 
+					':source_id' => 0,
+				));
+			}
+		}
+	}
+	
 	$data = array(
 		':user_id' => $user_id,
 		':real_name' => $real_name, 
@@ -59,6 +92,9 @@
 		':ts_show_seconds' => $ts_show_seconds,
 		':ts_show_ampm' => $ts_show_ampm,
 		':ts_show_date' => $ts_show_date,
+		':location' => $location,
+		':status_type' => $status_type,
+		':status_description' => $status_description
 	);
 	
 	$fields = '';
@@ -157,6 +193,59 @@
 		}
 	}
 	
+	if(!empty($_POST['remove_avatar']))
+	{
+		$old_avatar = $user['avatar'];
+		if($old_avatar)
+		{
+			@unlink('uploads/' . $old_avatar);
+			@unlink('uploads/' . 'mini_' . $old_avatar);
+			@unlink('uploads/' . 'normal_' . $old_avatar);
+		}
+		
+		$fields .= ',avatar = :avatar';
+		$data[':avatar'] = '';
+	}
+	elseif(!empty($_FILES['avatar']['name']))
+	{
+		$extension = strtolower(pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION));
+		if(!in_array($extension, array('png', 'jpg', 'jpeg', 'gif')))
+		{
+			$fail = true;
+			$x7->set_message($x7->lang('invalid_avatar_extension'));
+		}
+		else
+		{
+			$old_avatar = $user['avatar'];
+			if($old_avatar)
+			{
+				@unlink('uploads/' . $old_avatar);
+				@unlink('uploads/' . 'mini_' . $old_avatar);
+				@unlink('uploads/' . 'normal_' . $old_avatar);
+			}
+			
+			$count = 0;
+			do {
+				$new_avatar = 'avatar_' . sha1(uniqid('', true)) . '.' . $extension;
+				$count++;
+			} while($count < 5 && file_exists('uploads/' . $new_avatar));
+			
+			move_uploaded_file($_FILES["avatar"]["tmp_name"], 'uploads/' . $new_avatar);
+			
+			require_once('includes/libraries/phpthumb/ThumbLib.inc.php');
+			$thumb = PhpThumbFactory::create('uploads/' . $new_avatar);
+			$thumb->resize(16, 16);
+			$thumb->save('uploads/' . 'mini_' . $new_avatar);
+			
+			$thumb = PhpThumbFactory::create('uploads/' . $new_avatar);
+			$thumb->resize(100, 100);
+			$thumb->save('uploads/' . 'normal_' . $new_avatar);
+			
+			$fields .= ',avatar = :avatar';
+			$data[':avatar'] = $new_avatar;
+		}
+	}
+	
 	if(!$fail)
 	{
 		$sql = "
@@ -174,7 +263,10 @@
 				ts_24_hour = :ts_24_hour,
 				ts_show_seconds = :ts_show_seconds,
 				ts_show_ampm = :ts_show_ampm,
-				ts_show_date = :ts_show_date
+				ts_show_date = :ts_show_date,
+				status_type = :status_type,
+				status_description = :status_description,
+				location = :location
 				{$fields}
 			WHERE
 				id = :user_id
@@ -183,10 +275,12 @@
 		$st->execute($data);
 		
 		$x7->set_message($x7->lang('settings_updated'), 'notice');
-		$x7->go('settings');
+		//$x7->go('settings');
 	}
 	else
 	{
-		$x7->go('settings', $_POST);
+		//$x7->go('settings', $_POST);
+		$_SESSION['vars'] = $_POST;
 	}
 	
+	$x7->display('pages/savesettings');

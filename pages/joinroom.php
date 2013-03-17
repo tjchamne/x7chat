@@ -80,7 +80,8 @@
 	$sql = "
 		SELECT
 			room_user.*,
-			user.username AS user_name
+			user.username AS user_name,
+			user.status_type AS user_status
 		FROM {$x7->dbprefix}room_users room_user
 		INNER JOIN {$x7->dbprefix}users user ON
 			user.id = room_user.user_id

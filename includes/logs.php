@@ -24,6 +24,8 @@
 					dest_type = 'room'
 					AND dest_id = :id
 					AND message_type = 'message'
+				ORDER BY
+					timestamp ASC
 			";
 			$params = array(':id' => $room_id);
 			

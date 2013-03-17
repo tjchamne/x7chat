@@ -4,7 +4,12 @@
 	<?php $display('layout/messages'); ?>
 <?php else: ?>
 	<div id="title_def"><?php $esc($user['username']); ?></div>
+	<br />
 	<?php $display('layout/messages'); ?>
+	<?php if($user['avatar']): ?>
+		<a href="uploads/<?php echo $user['avatar']; ?>" target="_blank"><img src="uploads/<?php echo 'normal_' . $user['avatar']; ?>" /></a>
+	<?php endif; ?>
+	
 	<?php if($user['real_name']): ?>
 		<p><b><?php $lang('real_name_label'); ?></b></p>
 		<p><?php $esc($user['real_name']); ?></p>
@@ -18,6 +23,16 @@
 	<?php if($user['about']): ?>
 		<p><b><?php $lang('bio_label'); ?></b></p>
 		<p><?php $esc($user['about']); ?></p>
+		<hr />
+	<?php endif; ?>
+	<?php if($user['location']): ?>
+		<p><b><?php $lang('location_label'); ?></b></p>
+		<p><?php $esc($user['location']); ?></p>
+		<hr />
+	<?php endif; ?>
+	<?php if($user['status_description']): ?>
+		<p><b><?php $lang('status_label'); ?></b></p>
+		<p><?php $esc($user['status_description']); ?> (<?php $user['status_type'] ? $lang($user['status_type'] . '_option') : $lang('available_option'); ?>)</p>
 		<hr />
 	<?php endif; ?>
 	<?php if($show_ip && $user['ip']): ?>

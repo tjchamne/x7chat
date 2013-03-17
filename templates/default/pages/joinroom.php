@@ -8,7 +8,8 @@
 	
 	for(var key in users)
 	{
-		App.add_user_room(users[key], 1);
+		var user_room = new App.UserRoom(users[key]);
+		App.add_user_room(user_room, 1);
 	}
 	
 	for(var key in messages)

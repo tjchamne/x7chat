@@ -36,6 +36,7 @@
 				this.user_id = user.user_id;
 				this.room_id = user.room_id;
 				this.user_name = user.user_name;
+				this.user_status = ko.observable(user.user_status);
 				this.refreshed = 1;
 			}
 			
@@ -219,16 +220,16 @@
 				var modified_rooms = [];
 				for(var key in data)
 				{
-					var user_room = new App.UserRoom(data[key]);
-					var room = app.get_room(user_room.room_id, 'room');
+					var room = app.get_room(data[key].room_id, 'room');
 					if(room)
 					{
 						var user = 0;
 						for(var rkey in room.users())
 						{
-							if(room.users()[rkey].user_id == user_room.user_id)
+							if(room.users()[rkey].user_id == data[key].user_id)
 							{
 								user = room.users()[rkey];
+								user.user_status(data[key].user_status);
 							}
 						}
 						
@@ -243,6 +244,7 @@
 						}
 						else
 						{
+							var user_room = new App.UserRoom(data[key]);
 							app.add_user_room(user_room);
 						}
 					}
@@ -457,6 +459,21 @@
 			this.show_user_profile = function(data)
 			{
 				open_content_area('<?php $url('user_room_profile'); ?>' + '&user_id=' + data.user_id + '&room_id=' + data.room_id);
+			}
+			
+			this.translate_status = function(status)
+			{
+				switch(status)
+				{
+					case 'available':
+						return '';
+					case 'busy':
+						return '<?php $lang('busy_option'); ?>';
+					case 'away':
+						return '<?php $lang('away_option'); ?>';
+				}
+			
+				return '';
 			}
 			
 			this.leave_room = function(data)
@@ -751,7 +768,7 @@
 				</div>
 			</div>
 			<div id="onlinelist" data-bind="foreach: active_room().users()">
-				<div class="onlineuser" data-bind="click: $root.show_user_profile"><a href='#' data-bind="text: user_name"></a></div>
+				<div class="onlineuser" data-bind="click: $root.show_user_profile"><a href='#' data-bind="text: user_name"></a><span data-bind="if: user_status() && user_status() != 'available'"> (<span data-bind="text: $root.translate_status(user_status())"></span>)</span></div>
 			</div>
 			<div style="clear: both;"></div>
 			<div id="input_form">

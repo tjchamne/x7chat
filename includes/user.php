@@ -57,6 +57,9 @@
 				'message_font_size',
 				'message_font_color',
 				'message_font_face',
+				'location',
+				'status_description',
+				'status_type',
 			);
 			
 			$settings = array();
@@ -314,7 +317,11 @@
 				ip,
 				real_name,
 				gender,
-				about
+				about,
+				avatar,
+				location,
+				status_description,
+				status_type
 			FROM {$x7->dbprefix}users
 			WHERE {$by} = :value
 			LIMIT 1;
