@@ -1,19 +1,10 @@
 <?php
-	$x7->load('user');
+
+	namespace x7;
 	
-	$db = $x7->db();
-	
-	if(empty($_SESSION['user_id']))
-	{
-		$x7->fatal_error($x7->lang('login_required'));
-	}
-	
-	$user = new x7_user();
-	$perms = $user->permissions();
-	if(empty($perms['access_admin_panel']))
-	{
-		$x7->fatal_error($x7->lang('access_denied'));
-	}
+	$user = $ses->current_user();
+	$req->require_permission('access_admin_panel');
+	$ses->check_bans();
 	
 	$user_id = isset($_POST['user_id']) ? $_POST['user_id'] : 0;
 	$username = isset($_POST['username']) ? $_POST['username'] : '';
@@ -30,15 +21,15 @@
 		}
 		catch(x7_exception $ex)
 		{
-			$x7->set_message($x7->lang('user_not_found'));
-			$x7->go('admin_users');
+			$ses->set_message($x7->lang('user_not_found'));
+			$req->go('admin_users');
 		}
 	}
 	
 	if(!$edit_user_data && $user_id)
 	{
-		$x7->set_message($x7->lang('user_not_found'));
-		$x7->go('admin_list_users');
+		$ses->set_message($x7->lang('user_not_found'));
+		$req->go('admin_list_users');
 	}
 	
 	$fail = false;
@@ -51,7 +42,7 @@
 			$check_user = new x7_user($username, 'username');
 			$check_user->data();
 			$fail = true;
-			$x7->set_message($x7->lang('username_in_use'));
+			$ses->set_message($x7->lang('username_in_use'));
 		}
 		catch(x7_exception $ex)
 		{
@@ -66,7 +57,7 @@
 			$check_user = new x7_user($email, 'email');
 			$check_user->data();
 			$fail = true;
-			$x7->set_message($x7->lang('email_in_use'));
+			$ses->set_message($x7->lang('email_in_use'));
 		}
 		catch(x7_exception $ex)
 		{
@@ -75,14 +66,14 @@
 		if(!filter_var($email, FILTER_VALIDATE_EMAIL))
 		{
 			$fail = true;
-			$x7->set_message($x7->lang('invalid_email'));
+			$ses->set_message($x7->lang('invalid_email'));
 		}
 	}
 	
 	if(!$user_id && !$password)
 	{
 		$fail = true;
-		$x7->set_message($x7->lang('missing_register_password'));
+		$ses->set_message($x7->lang('missing_register_password'));
 	}
 	
 	if(empty($fail))
@@ -129,10 +120,10 @@
 		$st = $db->prepare($sql);
 		$st->execute($params);
 		
-		$x7->set_message($x7->lang('user_updated'), 'notice');
-		$x7->go('admin_list_users');
+		$ses->set_message($x7->lang('user_updated'), 'notice');
+		$req->go('admin_list_users');
 	}
 	else
 	{
-		$x7->go('admin_edit_user?id=' . $user_id, array('user' => $_POST));
+		$req->go('admin_edit_user?id=' . $user_id, true);
 	}

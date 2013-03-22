@@ -1,10 +1,9 @@
 <?php
-	$db = $x7->db();
+
+	namespace x7;
 	
-	if(empty($_SESSION['user_id']))
-	{
-		$x7->fatal_error($x7->lang('login_required'));
-	}
+	$user = $ses->current_user();
+	$ses->check_bans();
 	
 	$sql = "SELECT * FROM {$x7->dbprefix}rooms";
 	$st = $db->prepare($sql);

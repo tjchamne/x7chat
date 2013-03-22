@@ -1,47 +1,37 @@
 <?php
-	$x7->load('user');
-	$x7->load('mail');
-	$db = $x7->db();
+
+	namespace x7;
+	
+	$ses->check_bans();
+	
+	$mail = $x7->mail();
+	$users = $x7->users();
 	
 	$email = isset($_POST['email']) ? $_POST['email'] : null;
 	
 	try
 	{
-		$user = new x7_user($email, 'email');
-		$user_data = $user->data();
+		$user = $users->load_by_email($email);
+		
+		// Check if account is a guest
+		if(empty($user->password))
+		{
+			throw new exception\nonexistent_user_email;
+		}
+		
+		$token = sha1(microtime() . print_r($_SERVER, 1) . crypt(microtime() . mt_rand(0, mt_getrandmax())));
+		$user->reset_password = $token;
+		$users->save_user($user, array('reset_password'));
+		
+		$mail->send($user->email, 'reset_password', array(
+			'reset_url' => $x7->url('updatepassword?token=' . $token),
+		));
+		
+		$ses->set_message($x7->lang('reset_token_sent'), 'notice');
+		$req->go('login');
 	}
-	catch(x7_exception $ex)
+	catch(exception\nonexistent_user_email $ex)
 	{
-		$user = null;
+		$ses->set_message($x7->lang('email_not_registered'));
+		$req->go('resetpassword', true);
 	}
-	
-	if(!$user || !$user_data['password'])
-	{
-		$x7->set_message($x7->lang('email_not_registered'));
-		$x7->go('resetpassword', $_POST);
-	}
-	
-	require('./includes/libraries/phpass/PasswordHash.php');
-	$phpass = new PasswordHash(8, false);
-	$token = sha1($phpass->HashPassword(mt_rand() . microtime(TRUE) . print_r($_SERVER, 1)));
-	
-	$sql = "
-		UPDATE {$x7->dbprefix}users SET
-			reset_password = :token
-		WHERE
-			id = :user_id
-	";
-	$st = $db->prepare($sql);
-	$st->execute(array(
-		':token' => $token,
-		':user_id' => $user->id(),
-	));
-	
-	$user_data = $user->data();
-	$mail = new x7_mail();
-	$mail->send($user_data['email'], 'reset_password', array(
-		'reset_url' => $x7->url('updatepassword?token=' . $token),
-	));
-	
-	$x7->set_message($x7->lang('reset_token_sent'), 'notice');
-	$x7->go('login');

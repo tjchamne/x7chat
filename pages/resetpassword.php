@@ -1,8 +1,11 @@
 <?php
-	$db = $x7->db();
+
+	namespace x7;
 	
-	$vars = $x7->get_vars();
+	$ses->check_bans();
 	
-	$x7->display('pages/reset_password', array(
-		'email' => (isset($vars['email']) ? $vars['email'] : '')
-	));
+	$vdata = array(
+		'defaults' => $ses->get_flash('forward'),
+	);
+	
+	$x7->display('pages/reset_password', $vdata);

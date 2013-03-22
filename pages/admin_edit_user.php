@@ -1,46 +1,70 @@
 <?php
-	$x7->load('user');
-	$x7->load('admin');
+
+	namespace x7;
 	
-	$db = $x7->db();
+	$user = $ses->current_user();
+	$req->require_permission('access_admin_panel');
+	$ses->check_bans();
 	
-	if(empty($_SESSION['user_id']))
-	{
-		$x7->fatal_error($x7->lang('login_required'));
-	}
-	
-	$user = new x7_user();
-	$perms = $user->permissions();
-	if(empty($perms['access_admin_panel']))
-	{
-		$x7->fatal_error($x7->lang('access_denied'));
-	}
-	
-	$room = array();
+	$users = $x7->users();
+	$admin = $x7->admin();
+
 	$user_id = isset($_GET['id']) ? $_GET['id'] : 0;
 	
-	$edit_user_data = array();
 	if($user_id)
 	{
-		try
-		{
-			$edit_user = new x7_user($user_id);
-			$edit_user_data = $edit_user->data();
-		}
-		catch(x7_exception $ex)
-		{
-			$x7->set_message($x7->lang('user_not_found'));
-			$x7->go('admin_users');
-		}
+		$edit_user = $users->load_by_id($user_id);
+	}
+	else
+	{
+		$edit_user = new model\user(array(
+			'real_name' => '',
+			'about' => '',
+			'enable_sounds' => '',
+			'enable_styles' => '',
+			'gender' => '',
+			'message_font_size' => '',
+			'message_font_color' => '',
+			'message_font_face' => '',
+			'use_default_timestamp_settings' => '',
+			'enable_timestamps' => '',
+			'ts_24_hour' => '',
+			'ts_show_seconds' => '',
+			'ts_show_ampm' => '',
+			'ts_show_date' => '',
+			'location' => '',
+			'status_description' => '',
+			'email' => '',
+			'username' => '',
+			'avatar' => '',
+			'id' => '',
+		));
 	}
 	
-	$vars = $x7->get_vars();
-	if(!empty($vars['user']))
-	{
-		$edit_user_data = array_merge($edit_user_data, $vars['user']);
-	}
+	$sql = "
+		SELECT
+			*
+		FROM {$x7->dbprefix}message_fonts
+	";
+	$st = $db->prepare($sql);
+	$st->execute();
+	$fonts = $st->fetchAll();
+	
+	$genders = array(
+		'male' => $x7->lang('male'),
+		'female' => $x7->lang('female'),
+	);
+	
+	$post = $ses->get_flash('forward');
+	$defaults = merge(clone $edit_user, $post);
 	
 	$x7->display('pages/admin/edit_user', array(
-		'user' => $edit_user_data,
-		'menu' => generate_admin_menu($user_id ? 'edit_user' : 'create_user'),
+		'menu' => $admin->generate_admin_menu($user_id ? 'edit_user' : 'create_user'),
+		'genders' => $genders, 
+		'user' => $users->output($defaults),
+		'fonts' => $fonts,
+		'action' => 'savesettings?from=admin',
+		'allow_username_edit' => true,
+		'require_password_confirm' => false,
+		'disable_accounts' => false,
 	));

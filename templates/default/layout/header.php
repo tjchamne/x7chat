@@ -2,6 +2,8 @@
 <html>
 	<head>
 		<title><?php $esc($x7->config('title')); ?></title>
+		<link rel="stylesheet" type="text/css" href="scripts/datetimepicker/css/bootstrap-datetimepicker.min.css" />
+		<link rel="stylesheet" type="text/css" href="scripts/select2/select2.css" />
 		<link rel="stylesheet" type="text/css" href="themes/<?php echo $x7->config('theme'); ?>/style.css" />
 	</head>
 	<body>
@@ -13,7 +15,7 @@
 					</div>
 					<div id="header_menu">
 						<ul>
-							<?php if(!empty($_SESSION['user_id'])): ?>
+							<?php if(!empty($user)): ?>
 								<li id="chatrooms_menu"><a href="#"><?php $lang('chatrooms_menu'); ?></a></li>
 								<li id="settings_menu"><a href="#"><?php $lang('settings_menu'); ?></a></li>
 								<?php if($access_acp): ?>

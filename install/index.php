@@ -12,6 +12,8 @@
 	ini_set('display_errors', 'on');
 	error_reporting(E_ALL);
 
+	define('X7_ROOT', realpath(dirname(__FILE__) . '/../') . '/');
+
 	date_default_timezone_set('UTC');
 	
 	require('util.php');

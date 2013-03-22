@@ -1,26 +1,21 @@
 <?php
-	$x7->load('user');
-	$db = $x7->db();
+
+	namespace x7;
 	
-	if(empty($_SESSION['user_id']))
-	{
-		$x7->fatal_error($x7->lang('login_required'));
-	}
+	$user = $ses->current_user();
+	$ses->check_bans();
 	
-	$user_id = isset($_GET['user_id']) ? $_GET['user_id'] : 0;
-	$user = x7_get_user($user_id);
+	$users = $x7->users();
 	
-	$show_ip = false;
-	$allow_ban = false;
-	$perms = x7_get_user_permissions();
-	if($perms)
-	{
-		$show_ip = $perms['access_admin_panel'];
-		$allow_ban = $perms['access_admin_panel'];
-	}
+	// Get the user being shown
+	$view_user_id = isset($_GET['user_id']) ? $_GET['user_id'] : $user->id;
+	$view_user = $users->load_by_id($view_user_id);
+	
+	$show_ip = $users->has_permission($user, 'access_admin_panel');
+	$allow_ban = $users->has_permission($user, 'access_admin_panel');
 	
 	$x7->display('pages/user_room_profile', array(
-		'user' => $user,
+		'user' => $view_user,
 		'show_ip' => $show_ip,
 		'allow_ban' => $allow_ban
 	));

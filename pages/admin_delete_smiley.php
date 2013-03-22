@@ -1,20 +1,11 @@
 <?php
-	$x7->load('user');
+
+	namespace x7;
 	
-	$db = $x7->db();
-	
-	if(empty($_SESSION['user_id']))
-	{
-		$x7->fatal_error($x7->lang('login_required'));
-	}
-	
-	$user = new x7_user();
-	$perms = $user->permissions();
-	if(empty($perms['access_admin_panel']))
-	{
-		$x7->fatal_error($x7->lang('access_denied'));
-	}
-	
+	$user = $ses->current_user();
+	$req->require_permission('access_admin_panel');
+	$ses->check_bans();
+
 	$id = isset($_GET['id']) ? $_GET['id'] : 0;
 	
 	if($id)
@@ -39,5 +30,5 @@
 		));
 	}
 	
-	$x7->set_message($x7->lang('smiley_deleted'), 'notice');
-	$x7->go('admin_list_smilies');
+	$ses->set_message($x7->lang('smiley_deleted'), 'notice');
+	$req->go('admin_list_smilies');

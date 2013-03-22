@@ -1,19 +1,10 @@
 <?php
-	$x7->load('user');
+
+	namespace x7;
 	
-	$db = $x7->db();
-	
-	if(empty($_SESSION['user_id']))
-	{
-		$x7->fatal_error($x7->lang('login_required'));
-	}
-	
-	$user = new x7_user();
-	$perms = $user->permissions();
-	if(empty($perms['access_admin_panel']))
-	{
-		$x7->fatal_error($x7->lang('access_denied'));
-	}
+	$user = $ses->current_user();
+	$req->require_permission('access_admin_panel');
+	$ses->check_bans();
 	
 	$room = array();
 	$room_id = isset($_POST['room_id']) ? $_POST['room_id'] : 0;
@@ -40,15 +31,15 @@
 	
 	if(!$room && $room_id)
 	{
-		$x7->set_message($x7->lang('room_not_found'));
-		$x7->go('admin_list_rooms');
+		$ses->set_message($x7->lang('room_not_found'));
+		$req->go('admin_list_rooms');
 	}
 	
 	$fail = false;
 	
 	if(empty($name))
 	{
-		$x7->set_message($x7->lang('missing_room_name'));
+		$ses->set_message($x7->lang('missing_room_name'));
 		$fail = true;
 	}
 	elseif(empty($room) || $room['name'] != $name)
@@ -67,14 +58,14 @@
 		
 		if($check_room)
 		{
-			$x7->set_message($x7->lang('room_name_in_use'));
+			$ses->set_message($x7->lang('room_name_in_use'));
 			$fail = true;
 		}
 	}
 	
 	if(!empty($enable_password) && empty($password) && empty($room['password']))
 	{
-		$x7->set_message($x7->lang('room_password_required'));
+		$ses->set_message($x7->lang('room_password_required'));
 		$fail = true;
 	}
 	
@@ -85,7 +76,7 @@
 			if($password)
 			{
 				require('./includes/libraries/phpass/PasswordHash.php');
-				$phpass = new PasswordHash(8, false);
+				$phpass = new \PasswordHash(8, false);
 				$password = $phpass->HashPassword($password);
 			}
 			else
@@ -132,10 +123,10 @@
 		$st = $db->prepare($sql);
 		$st->execute($params);
 		
-		$x7->set_message($x7->lang('room_updated'), 'notice');
-		$x7->go('admin_list_rooms');
+		$ses->set_message($x7->lang('room_updated'), 'notice');
+		$req->go('admin_list_rooms');
 	}
 	else
 	{
-		$x7->go('admin_edit_room?room_id=' . $room_id, array('room' => $_POST));
+		$req->go('admin_edit_room?room_id=' . $room_id, true);
 	}

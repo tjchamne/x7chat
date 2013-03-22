@@ -5,7 +5,7 @@
 		'password_label' => 'Password',
 		'login_button' => 'Login',
 		'register_button' => 'Create Account',
-		'missing_login_username' => 'Please enter your username.',
+		'missing_login_username' => 'Please enter a username.',
 		'login_failed' => 'Your username or password is incorrect.',
 		'email_label' => 'E-Mail Address',
 		'login_link' => 'Login with an existing account',
@@ -236,5 +236,6 @@
 		'invalid_avatar_extension' => 'Your avatar image must be a png, jpg or gif image.',
 		'remove_avatar' => 'Remove Avatar',
 		'status_label' => 'Status',
-		'' => '',
+		'login_required' => 'You must be logged in to access this page.',
+		'page_not_found' => 'The requested page was not found.',
 	);

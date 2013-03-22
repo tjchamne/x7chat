@@ -1,26 +1,17 @@
 <?php
-	$x7->load('user');
+
+	namespace x7;
 	
-	$db = $x7->db();
-	
-	if(empty($_SESSION['user_id']))
-	{
-		$x7->fatal_error($x7->lang('login_required'));
-	}
-	
-	$user = new x7_user();
-	$perms = $user->permissions();
-	if(empty($perms['access_admin_panel']))
-	{
-		$x7->fatal_error($x7->lang('access_denied'));
-	}
+	$user = $ses->current_user();
+	$req->require_permission('access_admin_panel');
+	$ses->check_bans();
 	
 	$config = array();
 	$error = false;
 	
 	if(empty($_POST['title']))
 	{
-		$x7->set_message($x7->lang('title_required'));
+		$ses->set_message($x7->lang('title_required'));
 		$error = true;
 	}
 	else
@@ -33,7 +24,7 @@
 	
 	if(!filter_var($_POST['from_address'], FILTER_VALIDATE_EMAIL))
 	{
-		$x7->set_message($x7->lang('invalid_from_address'));
+		$ses->set_message($x7->lang('invalid_from_address'));
 		$error = true;
 	}
 	else
@@ -46,14 +37,14 @@
 	$config['smtp_host'] = isset($_POST['smtp_host']) ? $_POST['smtp_host'] : '';
 	if($config['use_smtp'] && !$config['smtp_host'])
 	{
-		$x7->set_message($x7->lang('smtp_host_required'));
+		$ses->set_message($x7->lang('smtp_host_required'));
 		$error = true;
 	}
 	
 	$config['smtp_port'] = isset($_POST['smtp_port']) ? (int)$_POST['smtp_port'] : 0;
 	if($config['use_smtp'] && !$config['smtp_port'])
 	{
-		$x7->set_message($x7->lang('smtp_port_required'));
+		$ses->set_message($x7->lang('smtp_port_required'));
 		$error = true;
 	}
 	
@@ -68,25 +59,25 @@
 	
 	if($config['min_font_size'] > $config['max_font_size'])
 	{
-		$x7->set_message($x7->lang('invalid_min_max_font_sizes'));
+		$ses->set_message($x7->lang('invalid_min_max_font_sizes'));
 		$error = true;
 	}
 	
 	if($config['min_font_size'] < 1)
 	{
-		$x7->set_message($x7->lang('invalid_min_font_sizes'));
+		$ses->set_message($x7->lang('invalid_min_font_sizes'));
 		$error = true;
 	}
 	
 	if($config['max_font_size'] > 100)
 	{
-		$x7->set_message($x7->lang('invalid_max_font_sizes'));
+		$ses->set_message($x7->lang('invalid_max_font_sizes'));
 		$error = true;
 	}
 	
 	if($error)
 	{
-		$x7->go('admin_settings', array('config' => $_POST));
+		$req->go('admin_settings', true);
 	}
 	else
 	{
@@ -124,6 +115,6 @@
 			':login_page_news' => $config['login_page_news'],
 		));
 	
-		$x7->set_message($x7->lang('admin_settings_updated'), 'notice');
-		$x7->go('admin_settings');
+		$ses->set_message($x7->lang('admin_settings_updated'), 'notice');
+		$req->go('admin_settings');
 	}

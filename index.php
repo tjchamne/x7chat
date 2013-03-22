@@ -1,10 +1,12 @@
 <?php
 
+	namespace x7;
+
 	date_default_timezone_set('UTC');
 	
 	error_reporting(E_ALL);
 	ini_set('display_errors', 'on');
-
+	
 	$config = require('./config.php');
 	if(!is_array($config) || empty($config['dbname']))
 	{
@@ -13,38 +15,48 @@
 	}
 	
 	require('./includes/x7chat.php');
-	$x7 = new x7chat;
+	$x7 = new x7chat($config);
 
-	$page = isset($_GET['page']) ? $_GET['page'] : 'chat';
-	if(preg_match('#[^a-z0-9_]#', $page) || !file_exists('./pages/' . $page . '.php')) {
-		throw new exception('Invalid page');
+	$ses = $x7->session();
+	$req = $x7->request();
+	$db = $x7->db();
+	
+	$default_page = false;
+	if(!isset($_GET['page']))
+	{
+		$default_page = true;
+		$page = 'chat';
+	}
+	else
+	{
+		$page = $_GET['page'];
 	}
 	
-	if(!in_array($page, array('sync', 'login', 'dologin')))
+	if(preg_match('#[^a-z0-9_]#', $page) || !file_exists('./pages/' . $page . '.php')) {
+		$page = 'login';
+		$x7->session()->set_message($x7->lang('page_not_found'));
+	}
+	
+	try
 	{
-		$x7->load('user');
-		try
+		if(!empty($_GET['session_key']))
 		{
-			$user = new x7_user();
-			$user_banned = $user->banned();
-		}
-		catch(x7_exception $ex)
-		{
-			$user_banned = false;
-			
-			if(!empty($_SESSION['user_id']))
-			{
-				$_SESSION = array();
-				session_destroy();
-				$x7->go('login');
-			}
+			$ses->handle_key($_GET['session_key']);
 		}
 		
-		if(x7_check_ip_bans() || $user_banned)
-		{
-			$x7->set_message($x7->lang('login_failed_banned'));
-			$x7->go('login');
-		}
+		require('./pages/' . $page . '.php');
 	}
-	
-	require('./pages/' . $page . '.php');
+	catch(exception\user_banned $ex)
+	{
+		$ses->set_message($x7->lang('login_failed_banned'));
+		$req->go('login');
+	}
+	catch(exception\user_not_authenticated $ex)
+	{
+		if(!$default_page)
+		{
+			$x7->session()->set_message($x7->lang('login_required'));
+		}
+		
+		$req->go('login');
+	}

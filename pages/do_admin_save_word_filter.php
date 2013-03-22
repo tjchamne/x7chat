@@ -1,26 +1,17 @@
 <?php
-	$x7->load('user');
+
+	namespace x7;
 	
-	$db = $x7->db();
-	
-	if(empty($_SESSION['user_id']))
-	{
-		$x7->fatal_error($x7->lang('login_required'));
-	}
-	
-	$user = new x7_user();
-	$perms = $user->permissions();
-	if(empty($perms['access_admin_panel']))
-	{
-		$x7->fatal_error($x7->lang('access_denied'));
-	}
+	$user = $ses->current_user();
+	$req->require_permission('access_admin_panel');
+	$ses->check_bans();
 	
 	$filter = array();
 	$error = false;
 	
 	if(empty($_POST['word']))
 	{
-		$x7->set_message($x7->lang('word_required'));
+		$ses->set_message($x7->lang('word_required'));
 		$error = true;
 	}
 	else
@@ -38,7 +29,7 @@
 	
 	if($error)
 	{
-		$x7->go('admin_edit_word_filter', array('filter' => $_POST));
+		$req->go('admin_edit_word_filter', true);
 	}
 	else
 	{
@@ -76,6 +67,6 @@
 			':source_id' => 0,
 		));
 		
-		$x7->set_message($x7->lang('admin_filter_updated'), 'notice');
-		$x7->go('admin_list_word_filters');
+		$ses->set_message($x7->lang('admin_filter_updated'), 'notice');
+		$req->go('admin_list_word_filters');
 	}

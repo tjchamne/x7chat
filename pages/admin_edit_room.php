@@ -1,20 +1,12 @@
 <?php
-	$x7->load('user');
-	$x7->load('admin');
+
+	namespace x7;
 	
-	$db = $x7->db();
-	
-	if(empty($_SESSION['user_id']))
-	{
-		$x7->fatal_error($x7->lang('login_required'));
-	}
-	
-	$user = new x7_user();
-	$perms = $user->permissions();
-	if(empty($perms['access_admin_panel']))
-	{
-		$x7->fatal_error($x7->lang('access_denied'));
-	}
+	$user = $ses->current_user();
+	$req->require_permission('access_admin_panel');
+	$ses->check_bans();
+
+	$admin = $x7->admin();
 	
 	$room = array();
 	$room_id = isset($_GET['room_id']) ? $_GET['room_id'] : 0;
@@ -36,17 +28,14 @@
 	
 	if(!$room && $room_id)
 	{
-		$x7->set_message($x7->lang('room_not_found'));
-		$x7->go('admin_rooms');
+		$ses->set_message($x7->lang('room_not_found'));
+		$req->go('admin_rooms');
 	}
 	
-	$vars = $x7->get_vars();
-	if(!empty($vars['room']))
-	{
-		$room = array_merge($room, $vars['room']);
-	}
+	$post = $ses->get_flash('forward');
+	$room = merge($room, $post);
 	
 	$x7->display('pages/admin/edit_room', array(
 		'room' => $room,
-		'menu' => generate_admin_menu($room_id ? 'edit_room' : 'create_room'),
+		'menu' => $admin->generate_admin_menu($room_id ? 'edit_room' : 'create_room'),
 	));

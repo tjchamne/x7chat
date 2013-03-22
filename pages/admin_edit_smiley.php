@@ -1,20 +1,12 @@
 <?php
-	$x7->load('user');
-	$x7->load('admin');
+
+	namespace x7;
 	
-	$db = $x7->db();
+	$user = $ses->current_user();
+	$req->require_permission('access_admin_panel');
+	$ses->check_bans();
 	
-	if(empty($_SESSION['user_id']))
-	{
-		$x7->fatal_error($x7->lang('login_required'));
-	}
-	
-	$user = new x7_user();
-	$perms = $user->permissions();
-	if(empty($perms['access_admin_panel']))
-	{
-		$x7->fatal_error($x7->lang('access_denied'));
-	}
+	$admin = $x7->admin();
 	
 	$id = isset($_GET['id']) ? $_GET['id'] : 0;
 	if(!$id)
@@ -59,7 +51,7 @@
 	}
 	
 	$x7->display('pages/admin/edit_smiley', array(
-		'menu' => generate_admin_menu($id ? 'edit_smiley' : 'create_smiley'),
+		'menu' => $admin->generate_admin_menu($id ? 'edit_smiley' : 'create_smiley'),
 		'smiley' => $smiley,
 		'smilies' => $images,
 	));

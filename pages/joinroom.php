@@ -1,10 +1,11 @@
 <?php
-	$db = $x7->db();
+
+	namespace x7;
 	
-	if(empty($_SESSION['user_id']))
-	{
-		die(json_encode(array('redirect' => $x7->url('login'))));
-	}
+	$user = $ses->current_user();
+	$ses->check_bans();
+	
+	$users = $x7->users();
 	
 	$room_id = isset($_GET['room_id']) ? $_GET['room_id'] : 0;
 	if(!$room_id)
@@ -15,8 +16,6 @@
 	$room_pass = isset($_GET['password']) ? $_GET['password'] : '';
 
 	$server_rooms = isset($_SESSION['rooms']) ? $_SESSION['rooms'] : array();
-	
-	$user_id = $_SESSION['user_id'];
 	
 	$sql = "
 		SELECT
@@ -41,20 +40,23 @@
 	if($pass)
 	{
 		require('./includes/libraries/phpass/PasswordHash.php');
-		$phpass = new PasswordHash(8, false);
+		$phpass = new \PasswordHash(8, false);
 	
 		if(empty($room_pass))
 		{
-			$x7->go('roompass?room_id=' . $room_id);
+			$req->go('roompass?room_id=' . $room_id);
 		}
 		elseif(!$phpass->CheckPassword($room_pass, $pass))
 		{
-			$x7->set_message($x7->lang('room_password_fail'));
-			$x7->go('roompass?room_id=' . $room_id);
+			$ses->set_message($x7->lang('room_password_fail'));
+			$req->go('roompass?room_id=' . $room_id);
 		}
 	}
 	
 	$_SESSION['last_local_sync_time'] = time();
+	$_SESSION['last_global_sync_time'] = time();
+	
+	$users->timeout_users();
 		
 	$sql = "
 		UPDATE {$x7->dbprefix}users
@@ -66,7 +68,7 @@
 	";
 	$st = $db->prepare($sql);
 	$st->execute(array(
-		':user_id' => $user_id,
+		':user_id' => $user->id,
 		':timestamp' => date('Y-m-d H:i:s'),
 		':ip' => $_SERVER['REMOTE_ADDR'],
 	));
@@ -75,7 +77,13 @@
 		INSERT IGNORE INTO {$x7->dbprefix}room_users (user_id, room_id) VALUES (:user_id, :room_id)
 	";
 	$st = $db->prepare($sql);
-	$st->execute(array(':room_id' => $room_id, ':user_id' => $user_id));
+	$st->execute(array(':room_id' => $room_id, ':user_id' => $user->id));
+	
+	$sql = "
+		INSERT INTO {$x7->dbprefix}online (user_id, room_id, join_timestamp) VALUES (:user_id, :room_id, :now)
+	";
+	$st = $db->prepare($sql);
+	$st->execute(array(':room_id' => $room_id, ':user_id' => $user->id, ':now' => date('Y-m-d H:i:s')));
 	
 	$sql = "
 		SELECT
@@ -107,10 +115,7 @@
 	
 	if($room['greeting'])
 	{
-		$x7->load('user');
-		$user = new x7_user();
-		$user_data = $user->data();
-		$greet = str_replace('%u', $user_data['username'], $room['greeting']);
+		$greet = str_replace('%u', $user->username, $room['greeting']);
 		
 		$sql = "
 			INSERT INTO {$x7->dbprefix}messages (timestamp, message, message_type, dest_type, dest_id, source_type, source_id) VALUES (:timestamp, :message, :message_type, :dest_type, :dest_id, :source_type, :source_id)
@@ -121,7 +126,7 @@
 			':message' => $greet,
 			':message_type' => 'message', 
 			':dest_type' => 'user', 
-			':dest_id' => $user_id, 
+			':dest_id' => $user->id, 
 			':source_type' => 'system', 
 			':source_id' => 0,
 		));

@@ -1,10 +1,14 @@
 <?php
-	$db = $x7->db();
+
+	namespace x7;
 	
-	if(empty($_SESSION['user_id']))
-	{
-		die(json_encode(array('redirect' => $x7->url('login'))));
-	}
+	$req->is_ajax_request(true);
+	
+	$user = $ses->current_user();
+	
+	$users = $x7->users();
+	
+	$user_id = $user->id;
 	
 	$local_sync_time = 11;
 	$global_sync_time = 31;
@@ -20,8 +24,6 @@
 	$process_rooms = $server_rooms;
 	$process_rooms[] = 0;
 	$rooms = implode(',', $process_rooms);
-	
-	$user_id = $_SESSION['user_id'];
 	
 	if(empty($last_event_id))
 	{
@@ -66,33 +68,7 @@
 	if($last_global_sync_time < time() - $global_sync_time)
 	{
 		$_SESSION['last_global_sync_time'] = time();
-	
-		$sql = "
-			DELETE room_user.* FROM {$x7->dbprefix}room_users room_user
-			INNER JOIN {$x7->dbprefix}users user ON
-				user.id = room_user.user_id
-				AND user.timestamp < :expires
-		";
-		$st = $db->prepare($sql);
-		$st->execute(array(
-			'expires' => date("Y-m-d H:i:s", time() - $user_expiration_time),
-		));
-		$removed = $st->rowCount();
-		if($removed > 0)
-		{
-			$sql = "
-				INSERT INTO {$x7->dbprefix}messages (timestamp, message_type, dest_type, dest_id, source_type, source_id) VALUES (:timestamp, :message_type, :dest_type, :dest_id, :source_type, :source_id)
-			";
-			$st = $db->prepare($sql);
-			$st->execute(array(
-				':timestamp' => date('Y-m-d H:i:s'), 
-				':message_type' => 'room_resync', 
-				':dest_type' => 'room', 
-				':dest_id' => 0, 
-				':source_type' => 'system', 
-				':source_id' => 0,
-			));
-		}
+		$users->timeout_users();
 	}
 	
 	// pull new messages
@@ -167,24 +143,13 @@
 		
 		if($event['message_type'] == 'ban_resync')
 		{
-			$x7->load('user');
-			$user_ob = new x7_user();
-			if($user_ob->banned() || x7_check_ip_bans())
-			{
-				$user_ob->leave_rooms();
-				
-				$_SESSION['user_id'] = 0;
-				session_destroy();
-				session_start();
-				
-				$x7->set_message($x7->lang('login_failed_banned'));
-				die(json_encode(array('redirect' => $x7->url('login'))));
-			}
+			$ses->check_bans();
+			unset($events[$key]);
 		}
 		
 		if($event['message_type'] == 'logout')
 		{
-			die(json_encode(array('redirect' => $x7->url('leaverooms'))));
+			die(json_encode(array('redirect' => $x7->url('logout'))));
 		}
 	}
 	

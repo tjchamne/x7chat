@@ -1,11 +1,14 @@
 <?php
-	$x7->load('user');
-	$x7->load('admin');
+
+	namespace x7;
 	
-	$db = $x7->db();
+	$user = $ses->current_user();
+	$req->require_permission('access_admin_panel');
+	$ses->check_bans();
+	
+	$admin = $x7->admin();
+	
 	$page_name = 'list_users';
-	
-	force_admin_access($page_name);
 	
 	$per_page = 15;
 	$page = 1;
@@ -48,5 +51,5 @@
 			'page' => $page,
 			'action' => 'admin_list_users?pg=',
 		),
-		'menu' => generate_admin_menu($page_name),
+		'menu' => $admin->generate_admin_menu($page_name),
 	));

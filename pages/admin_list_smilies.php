@@ -1,20 +1,12 @@
 <?php
-	$x7->load('user');
-	$x7->load('admin');
+
+	namespace x7;
 	
-	$db = $x7->db();
+	$user = $ses->current_user();
+	$req->require_permission('access_admin_panel');
+	$ses->check_bans();
 	
-	if(empty($_SESSION['user_id']))
-	{
-		$x7->fatal_error($x7->lang('login_required'));
-	}
-	
-	$user = new x7_user();
-	$perms = $user->permissions();
-	if(empty($perms['access_admin_panel']))
-	{
-		$x7->fatal_error($x7->lang('access_denied'));
-	}
+	$admin = $x7->admin();
 	
 	$sql = "SELECT * FROM {$x7->dbprefix}smilies";
 	$st = $db->prepare($sql);
@@ -23,5 +15,5 @@
 	
 	$x7->display('pages/admin/smilies', array(
 		'smilies' => $smilies,
-		'menu' => generate_admin_menu('list_smilies'),
+		'menu' => $admin->generate_admin_menu('list_smilies'),
 	));

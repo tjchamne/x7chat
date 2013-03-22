@@ -1,5 +1,21 @@
 <?php
 
+	namespace x7;
+	
+	use \PDO;
+	
+	function merge($dest, $with)
+	{
+		foreach($dest as $field => &$key)
+		{
+			if(isset($with[$field]))
+			{
+				$key = $with[$field];
+			}
+		}
+		return $dest;
+	}
+
 	function vals()
 	{
 		$args = func_get_args();
@@ -19,22 +35,165 @@
 
 	class x7chat
 	{
-		const VERSION = '3.2.0a2';
-		const VERSION_ID = 30200102;
+		const VERSION = '3.2.0a3';
+		const VERSION_ID = 30200103;
 	
 		protected $strings;
 		protected $db;
 		protected $config;
+		protected $system_config;
+		public $root;
 		public $dbprefix;
-	
-		public function __construct()
+		
+		protected $users;
+		protected $session;
+		protected $bans;
+		protected $auth;
+		protected $integration_api;
+		protected $api;
+		protected $request;
+		protected $mail;
+		protected $admin;
+		protected $logs;
+		
+		public function api()
 		{
-			session_start();
+			if(!$this->api)
+			{
+				require_once($this->root . 'includes/libraries/phpseclib/Crypt/Hash.php');
+				require_once($this->root . 'includes/libraries/phpseclib/Crypt/AES.php');
+				$this->api = new api($this->system_config('api_key'));
+			}
+			
+			return $this->api;
 		}
 		
-		public function load($lib)
+		public function logs()
 		{
-			require_once('./includes/' . $lib . '.php');
+			if(!$this->logs)
+			{
+				$this->logs = new logs($this);
+			}
+			
+			return $this->logs;
+		}
+		
+		public function admin()
+		{
+			if(!$this->admin)
+			{
+				$this->admin = new admin($this);
+			}
+			
+			return $this->admin;
+		}
+		
+		public function mail()
+		{
+			if(!$this->mail)
+			{
+				$this->mail = new mail($this);
+			}
+			
+			return $this->mail;
+		}
+		
+		public function request()
+		{
+			if(!$this->request)
+			{
+				$this->request = new request($this);
+			}
+			
+			return $this->request;
+		}
+		
+		public function integration_api()
+		{
+			if(!$this->integration_api)
+			{
+				$this->integration_api = new integration_api($this);
+			}
+			
+			return $this->integration_api;
+		}
+		
+		public function auth()
+		{
+			if(!$this->auth)
+			{
+				$authenticator = !empty($this->system_config['auth_plugin']) ? $this->system_config['auth_plugin'] : 'standalone';
+				$authenticator = 'x7\\integration\\' . $authenticator . '\\authenticator';
+				$this->auth = new $authenticator($this);
+			}
+			
+			return $this->auth;
+		}
+		
+		public function bans()
+		{
+			if(!$this->bans)
+			{
+				$this->bans = new bans($this);
+			}
+			
+			return $this->bans;
+		}
+		
+		public function users()
+		{
+			if(!$this->users)
+			{
+				$this->users = new users($this);
+			}
+			
+			return $this->users;
+		}
+		
+		public function session()
+		{
+			if(!$this->session)
+			{
+				$this->session = new session($this);
+			}
+			
+			return $this->session;
+		}
+	
+		public function __construct($config)
+		{
+			$this->system_config = $config;
+			$this->root = $config['root'];
+		
+			spl_autoload_register(array($this, 'load_class'));
+		}
+		
+		public function load_class($class)
+		{
+			$class = explode('\\', $class);
+			if(current($class) === 'x7')
+			{
+				$path = implode('/', array_splice($class, 1));
+				$path = $this->root . 'includes/' . $path . '.php';
+				if(file_exists($path))
+				{
+					require_once($path);
+					return true;
+				}
+				
+				return false;
+			}
+		}
+		
+		public function run()
+		{
+			$page = isset($_GET['page']) ? $_GET['page'] : 'chat';
+			if(preg_match('#[^a-z0-9_]#', $page) || !file_exists($this->root . 'pages/' . $page . '.php')) {
+				throw new exception('Invalid page');
+			}
+			
+			$x7 = $this;
+			require($this->root . 'pages/' . $page . '.php');
 		}
 		
 		public function fatal_error($error)
@@ -46,7 +205,7 @@
 		{
 			if(!$this->db)
 			{
-				$config = require('./config.php');
+				$config = $this->system_config;
 				
 				$dsn = 'mysql:host=' . $config['host'] . ';dbname=' . $config['dbname'] . ';charset=utf8';
 				$options = array(
@@ -76,30 +235,14 @@
 			return $req_url;
 		}
 		
-		public function go($to, $vars = array())
+		public function system_config($var)
 		{
-			$to = preg_replace("#^([a-z0-9_-]+)\?#i", '$1&', $to);
-			$_SESSION['vars'] = $vars;
-			header("Location: ?page=$to");
-			session_write_close();
-			exit;
-		}
-		
-		public function get_vars($clear = true)
-		{
-			$vars = isset($_SESSION['vars']) ? $_SESSION['vars'] : array();
-			
-			if($clear === true)
+			if(isset($this->system_config[$var]))
 			{
-				unset($_SESSION['vars']);
+				return $this->system_config[$var];
 			}
 			
-			return $vars;
-		}
-		
-		public function post($var)
-		{
-			return isset($_POST[$var]) ? $_POST[$var] : null;
+			return null;
 		}
 		
 		public function config($var)
@@ -128,7 +271,7 @@
 		{
 			if(empty($this->strings))
 			{
-				$this->strings = require('./languages/en-us.php');
+				$this->strings = require($this->root . 'languages/en-us.php');
 			}
 			
 			$string = isset($this->strings[$string]) ? $this->strings[$string] : 'MISSING TRANSLATION: ' . $string;
@@ -145,27 +288,10 @@
 		{
 			if(empty($this->strings))
 			{
-				require('./languages/en-us.php');
+				require($this->root . 'languages/en-us.php');
 			}
 			
 			echo isset($this->strings[$string]) ? $this->strings[$string] : 'MISSING TRANSLATION: ' . $string;
-		}
-		
-		public function set_message($message, $type = 'error')
-		{
-			$_SESSION['messages'][$type][] = $message;
-		}
-		
-		public function get_messages($type, $clear = true)
-		{
-			$messages = isset($_SESSION['messages'][$type]) ? $_SESSION['messages'][$type] : array();
-		
-			if($clear)
-			{
-				unset($_SESSION['messages'][$type]);
-			}
-			
-			return $messages;
 		}
 		
 		public function esc($var)
@@ -186,7 +312,16 @@
 		{
 			$x7 = $this;
 			
-			$vars = array_merge($this->get_vars(), $vars);
+			if(!isset($vars['errors']))
+			{
+				$vars['errors'] = $this->session()->get_messages('error');
+			}
+			
+			if(!isset($vars['notices']))
+			{
+				$vars['notices'] = $this->session()->get_messages('notice');
+			}
+			
 			extract($vars);
 			
 			$val = function($var) use($vars)
@@ -230,6 +365,6 @@
 				echo $x7->url($string);
 			};
 			
-			require('./templates/default/' . $template . '.php');
+			require($this->root . 'templates/default/' . $template . '.php');
 		}
 	}

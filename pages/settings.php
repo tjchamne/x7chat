@@ -1,14 +1,11 @@
 <?php
-	$x7->load('user');
 
-	$db = $x7->db();
+	namespace x7;
 	
-	if(empty($_SESSION['user_id']))
-	{
-		$x7->fatal_error($x7->lang('login_required'));
-	}
+	$user = $ses->current_user();
+	$ses->check_bans();
 	
-	$user_id = $_SESSION['user_id'];
+	$users = $x7->users();
 	
 	$sql = "
 		SELECT
@@ -19,26 +16,20 @@
 	$st->execute();
 	$fonts = $st->fetchAll();
 	
-	$user = new x7_user();
-	
-	$vals = $x7->get_vars();
-	if($vals)
-	{
-		$defaults = $vals;
-	}
-	else
-	{
-		$defaults = $user->data();
-	}
-	
 	$genders = array(
 		'male' => $x7->lang('male'),
 		'female' => $x7->lang('female'),
 	);
 	
+	$post = $ses->get_flash('forward');
+	$defaults = merge(clone $user, $post);
+	
 	$x7->display('pages/settings', array(
 		'genders' => $genders, 
-		'user' => $defaults,
-		'settings' => $user->get_settings(),
+		'user' => $users->output($defaults),
 		'fonts' => $fonts,
+		'action' => 'savesettings',
+		'allow_username_edit' => false,
+		'require_password_confirm' => true,
+		'disable_accounts' => (!$user->password || $user->password === 'x'),
 	));

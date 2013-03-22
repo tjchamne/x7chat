@@ -1,25 +1,48 @@
 <?php
 
-	class x7_logs
+	namespace x7;
+
+	class logs
 	{
 		protected $x7;
-		protected $user;
+		protected $db;
+		protected $dbprefix;
 	
-		public function __construct()
+		public function __construct($x7)
 		{
-			global $x7;
 			$this->x7 = $x7;
-			
-			$x7->load('user');
-			$this->user = new x7_user();
+			$this->db = $x7->db();
+			$this->dbprefix = $x7->dbprefix;
 		}
 		
-		public function get_room_logs($room_id, $start = null, $end = null)
+		public function get_visible_rooms($user)
+		{
+			$sql = "
+				SELECT DISTINCT
+					online.room_id,
+					room.name
+				FROM {$this->dbprefix}online AS online
+				LEFT JOIN {$this->dbprefix}rooms AS room ON
+					room.id = online.room_id
+				WHERE
+					online.user_id = :user_id
+			";
+			$st = $this->db->prepare($sql);
+			$st->execute(array(':user_id' => $user->id));
+			return $st->fetchAll();
+		}
+		
+		public function get_room_logs($user, $room_id, $start = null, $end = null)
 		{
 			$sql = "
 				SELECT
-						*
-				FROM {$this->x7->dbprefix}messages
+						message.*
+				FROM {$this->dbprefix}messages AS message
+				INNER JOIN {$this->dbprefix}online AS online ON
+					online.user_id = :user_id
+					AND online.room_id = :id
+					AND online.join_timestamp <= message.timestamp
+					AND online.part_timestamp >= message.timestamp
 				WHERE
 					dest_type = 'room'
 					AND dest_id = :id
@@ -27,7 +50,7 @@
 				ORDER BY
 					timestamp ASC
 			";
-			$params = array(':id' => $room_id);
+			$params = array(':id' => $room_id, ':user_id' => $user->id);
 			
 			if($start)
 			{
@@ -41,11 +64,12 @@
 				$params[':end'] = $start->format('Y-m-d H:i:s');
 			}
 			
-			$st = $this->x7->db()->prepare($sql);
+			$st = $this->db->prepare($sql);
 			$st->execute($params);
 			return $st->fetchAll();
 		}
 		
+		/*
 		public function get_user_logs($user_id, $other_user_id = null, $start = null, $end = null)
 		{
 			$sql = "
@@ -106,4 +130,5 @@
 			$st->execute($params);
 			return $st->fetchAll();
 		}
+		*/
 	}

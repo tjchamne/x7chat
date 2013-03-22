@@ -2,10 +2,10 @@
 	<p><?php $lang('register_instructions'); ?></p>
 	<form action="<?php $url('doregister'); ?>" method="post">
 		<label for="username"><?php $lang('username_label'); ?></label>
-		<input type="text" name="username" id="username" value="<?php $var('username'); ?>" />
+		<input type="text" name="username" id="username" value="<?php $var('defaults.username'); ?>" />
 		
 		<label for="email"><?php $lang('email_label'); ?></label>
-		<input type="text" name="email" id="email" value="<?php $var('email'); ?>" />
+		<input type="text" name="email" id="email" value="<?php $var('defaults.email'); ?>" />
 		
 		<label for="password"><?php $lang('password_label'); ?></label>
 		<input type="password" name="password" id="password" value="" />

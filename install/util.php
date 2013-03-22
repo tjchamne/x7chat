@@ -22,7 +22,7 @@
 	
 	function run_sql($db, $srcdir, $prefix)
 	{
-		$dir = scandir('./sql/' . $srcdir);
+		$dir = scandir(X7_ROOT . 'install/sql/' . $srcdir);
 		$patches = array();
 		foreach($dir as $file)
 		{
@@ -30,7 +30,7 @@
 			{
 				$order = $match[1];
 				
-				$sql = file_get_contents('./sql/' . $srcdir .'/' . $file);
+				$sql = file_get_contents(X7_ROOT . 'install/sql/' . $srcdir .'/' . $file);
 				$sql = str_replace('{$prefix}', $prefix, $sql);
 				
 				$patches[$order][$file] = $sql;

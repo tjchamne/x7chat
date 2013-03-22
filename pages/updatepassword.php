@@ -1,39 +1,30 @@
 <?php
-	$x7->load('user');
-	$db = $x7->db();
+
+	namespace x7;
+	
+	$ses->check_bans();
+	
+	$users = $x7->users();
+	$auth = $x7->auth();
 	
 	$token = isset($_GET['token']) ? $_GET['token'] : null;
 	
 	try
 	{
-		$user = new x7_user($token, 'reset_password');
-		$user->data();
+		$user = $users->load_by_password_token($token);
 	}
-	catch(x7_exception $ex)
+	catch(exception\nonexistent_user_password_token $ex)
 	{
-		$x7->set_message($x7->lang('invalid_reset_token'));
-		$x7->go('resetpassword');
+		$ses->set_message($x7->lang('invalid_reset_token'));
+		$req->go('resetpassword');
 	}
 	
-	require('./includes/libraries/phpass/PasswordHash.php');
-	$phpass = new PasswordHash(8, false);
-	$pass = substr(sha1($phpass->HashPassword(mt_rand() . microtime(TRUE) . print_r($_SERVER, 1))), 0, 16);
-	$hashed_pass = $phpass->HashPassword($pass);
+	$pass = substr(sha1(microtime() . print_r($_SERVER, 1) . crypt(microtime() . mt_rand(0, mt_getrandmax()))), 0, 8);
+	$user->password = $auth->hash_password($pass);
+	$user->reset_password = '';
+	$users->save_user($user, array('password', 'reset_password'));
 	
-	$sql = "
-		UPDATE {$x7->dbprefix}users SET
-			reset_password = '',
-			password = :password
-		WHERE
-			id = :user_id
-	";
-	$st = $db->prepare($sql);
-	$st->execute(array(
-		':password' => $hashed_pass,
-		':user_id' => $user->id(),
-	));
-	
-	$x7->set_message($x7->lang('password_updated', array(
+	$ses->set_message($x7->lang('password_updated', array(
 		':password' => $pass,
 	)), 'notice');
-	$x7->go('login');
+	$req->go('login');

@@ -1,12 +1,12 @@
 <?php
-	$x7->load('user');
+
+	namespace x7;
 	
-	$db = $x7->db();
+	$user = $ses->current_user();
+	$req->require_permission('access_admin_panel');
+	$ses->check_bans();
 	
-	if(empty($_SESSION['user_id']))
-	{
-		$x7->fatal_error($x7->lang('login_required'));
-	}
+	$users = $x7->users();
 	
 	$user_id = isset($_GET['user_id']) ? $_GET['user_id'] : 0;
 	$by = isset($_GET['by']) ? $_GET['by'] : 0;
@@ -21,20 +21,9 @@
 		throw new exception("Invalid parameter value for by");
 	}
 	
-	$perms = x7_get_user_permissions();
-	if(!$perms || !$perms['access_admin_panel'])
-	{
-		$x7->set_message($x7->lang('login_failed_banned_access_denied'));
-		$x7->go('user_room_profile?user=' . $user_id);
-	}
+	$banning_user = $users->load_by_id($user_id);
 	
-	$banning_user = x7_get_user($user_id);
-	if(!$banning_user)
-	{
-		$x7->fatal_error($x7->lang('login_failed_banned_invalid_user'));
-	}
-	
-	if(!$banning_user['ip'])
+	if(!$banning_user->ip)
 	{
 		$x7->fatal_error($x7->lang('login_failed_banned_unknown_ip'));
 	}
@@ -44,7 +33,7 @@
 		$sql = "
 			REPLACE INTO {$x7->dbprefix}bans (ip) VALUES (:ip)
 		";
-		$params = array(':ip' => $banning_user['ip']);
+		$params = array(':ip' => $banning_user->ip);
 	}
 	else
 	{
@@ -75,5 +64,5 @@
 		':source_id' => 0,
 	));
 	
-	$x7->set_message($x7->lang('user_banned'), 'notice');
-	$x7->go('user_room_profile?user=' . $user_id);
+	$ses->set_message($x7->lang('user_banned'), 'notice');
+	$req->go('user_room_profile?user=' . $user_id);

@@ -2,12 +2,12 @@
 <?php $display('layout/adminmenu'); ?>
 <div id="admin_content">
 	<p><?php $lang('admin_confirm_delete_user', array(
-		':account' => $x7->esc($user['username']),
+		':account' => $x7->esc($user->username),
 	)); ?></p>
 	<p><?php $lang('not_reversable'); ?></p>
 	<br />
 	<form class="standard_form" data-action="admin_delete_user">
-		<input type="hidden" name="id" id="id" value="<?php $esc($val('user.id')); ?>" />
+		<input type="hidden" name="id" id="id" value="<?php $esc($user->id); ?>" />
 		<input type="hidden" name="confirm" value="1" />
 		
 		<input type="submit" value="<?php $lang('yes_delete'); ?>" />

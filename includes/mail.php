@@ -1,13 +1,14 @@
 <?php
 
-	class x7_mail
+	namespace x7;
+
+	class mail
 	{
 		protected $x7;
 		protected $mailer;
 	
-		public function __construct()
+		public function __construct($x7)
 		{
-			global $x7;
 			$this->x7 = $x7;
 			
 			require_once('./includes/libraries/swift/swift_required.php');
@@ -20,16 +21,16 @@
 				$username = $this->x7->config('smtp_user');
 				$password = $this->x7->config('smtp_pass');
 				$mode = $this->x7->config('smtp_mode');
-				$transport = Swift_SmtpTransport::newInstance($host, $port, $mode)
+				$transport = \Swift_SmtpTransport::newInstance($host, $port, $mode)
 					->setUsername($username)
 					->setPassword($password);
 			}
 			else
 			{
-				$transport = Swift_MailTransport::newInstance();
+				$transport = \Swift_MailTransport::newInstance();
 			}
 			
-			$this->mailer = Swift_Mailer::newInstance($transport);
+			$this->mailer = \Swift_Mailer::newInstance($transport);
 			
 			//$logger = new Swift_Plugins_Loggers_EchoLogger();
 			//$this->mailer->registerPlugin(new Swift_Plugins_LoggerPlugin($logger));
@@ -41,7 +42,7 @@
 			$html = $this->x7->render('emails/' . $template . '/' . $template . '_html', $vars);
 			$text = strip_tags($this->x7->render('emails/' . $template . '/' . $template . '_text', $vars));
 			
-			$message = Swift_Message::newInstance($subject)
+			$message = \Swift_Message::newInstance($subject)
 				->setFrom($this->x7->config('from_address'))
 				->setTo($to)
 				->setBody($text)

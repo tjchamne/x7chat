@@ -1,20 +1,12 @@
 <?php
-	$x7->load('user');
-	$x7->load('admin');
+
+	namespace x7;
 	
-	$db = $x7->db();
+	$user = $ses->current_user();
+	$req->require_permission('access_admin_panel');
+	$ses->check_bans();
 	
-	if(empty($_SESSION['user_id']))
-	{
-		$x7->fatal_error($x7->lang('login_required'));
-	}
-	
-	$user = new x7_user();
-	$perms = $user->permissions();
-	if(empty($perms['access_admin_panel']))
-	{
-		$x7->fatal_error($x7->lang('access_denied'));
-	}
+	$admin = $x7->admin();
 	
 	$sql = "SELECT `id`, `name` FROM {$x7->dbprefix}rooms";
 	$st = $db->prepare($sql);
@@ -27,14 +19,11 @@
 	$config = $st->fetch();
 	$st->closeCursor();
 	
-	$vars = $x7->get_vars();
-	if(!empty($vars['config']))
-	{
-		$config = array_merge($config, $vars['config']);
-	}
+	$post = $ses->get_flash('forward');
+	$config = merge($config, $post);
 	
 	$x7->display('pages/admin/settings', array(
 		'config' => $config,
 		'rooms' => $rooms,
-		'menu' => generate_admin_menu('settings'),
+		'menu' => $admin->generate_admin_menu('settings'),
 	));

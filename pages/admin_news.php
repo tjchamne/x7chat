@@ -1,20 +1,12 @@
 <?php
-	$x7->load('user');
-	$x7->load('admin');
+
+	namespace x7;
 	
-	$db = $x7->db();
-	
-	if(empty($_SESSION['user_id']))
-	{
-		$x7->fatal_error($x7->lang('login_required'));
-	}
-	
-	$user = new x7_user();
-	$perms = $user->permissions();
-	if(empty($perms['access_admin_panel']))
-	{
-		$x7->fatal_error($x7->lang('access_denied'));
-	}
+	$user = $ses->current_user();
+	$req->require_permission('access_admin_panel');
+	$ses->check_bans();
+
+	$admin = $x7->admin();
 	
 	$installed_version = x7chat::VERSION;
 	$cur_stable = '';
@@ -37,5 +29,5 @@
 		'cur_stable' => $cur_stable,
 		'cur_unstable' => $cur_unstable,
 		'news' => $news,
-		'menu' => generate_admin_menu('news'),
+		'menu' => $admin->generate_admin_menu('news'),
 	));

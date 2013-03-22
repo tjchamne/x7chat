@@ -1,12 +1,15 @@
 <?php $display('layout/header'); ?>
 	<script type="text/javascript" src="scripts/ko.js"></script>
 	<script type="text/javascript" src="scripts/jquery.js"></script>
+	<script type="text/javascript" src="scripts/jquery.js"></script>
+	<script type="text/javascript" src="scripts/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+	<script type="text/javascript" src="scripts/select2/select2.min.js"></script>
 	<script type="text/javascript">
 		var App = new function()
 		{
 			var app = this;
 			
-			this.settings = <?php echo json_encode($settings); ?>;
+			this.user = <?php echo json_encode($user); ?>;
 			
 			this.filters = <?php echo json_encode($filters); ?>;
 			this.smilies = ko.observableArray(<?php echo json_encode($smilies); ?>);
@@ -28,7 +31,7 @@
 				this.name = room.name;
 				this.messages = ko.observableArray();
 				this.users = ko.observableArray();
-				this.alert = ko.observable(0);
+				this.alert = ko.observable(room.alert ? room.alert : 0);
 			}
 			
 			this.UserRoom = function(user)
@@ -53,7 +56,7 @@
 					ampm = ' pm';
 				}
 				
-				if(!app.settings.ts_24_hour || app.settings.use_default_timestamp_settings)
+				if(!app.user.ts_24_hour || app.user.use_default_timestamp_settings)
 				{
 					if(hours > 12)
 					{
@@ -65,7 +68,7 @@
 					}
 				}
 				
-				if(!app.settings.ts_show_ampm && !app.settings.use_default_timestamp_settings)
+				if(!app.user.ts_show_ampm && !app.user.use_default_timestamp_settings)
 				{
 					ampm = '';
 				}
@@ -82,10 +85,10 @@
 					seconds = '0' + seconds;
 				}
 				
-				if(app.settings.enable_timestamps || app.settings.use_default_timestamp_settings)
+				if(app.user.enable_timestamps || app.user.use_default_timestamp_settings)
 				{
 					this.timestamp = hours + ":" + minutes;
-					if(app.settings.ts_show_seconds)
+					if(app.user.ts_show_seconds)
 					{
 						this.timestamp += ":" + seconds;
 					}
@@ -104,9 +107,9 @@
 				this.raw_message = message.message;
 				
 				this.size = '';
-				if(!app.settings.enable_styles)
+				if(!app.user.enable_styles)
 				{
-					this.size = app.settings.message_font_size;
+					this.size = app.user.message_font_size;
 				}
 				else if(message.font_size)
 				{
@@ -114,9 +117,9 @@
 				}
 				
 				this.face = '';
-				if(!app.settings.enable_styles)
+				if(!app.user.enable_styles)
 				{
-					this.face = app.settings.message_font_face;
+					this.face = app.user.message_font_face;
 				}
 				else if(message.font_face)
 				{
@@ -124,9 +127,9 @@
 				}
 				
 				this.color = '';
-				if(!app.settings.enable_styles)
+				if(!app.user.enable_styles)
 				{
-					this.color = app.settings.message_font_color;
+					this.color = app.user.message_font_color;
 				}
 				else if(message.font_color)
 				{
@@ -321,7 +324,7 @@
 				if(message.dest_type == 'user')
 				{
 					var check_id = message.dest_id;
-					if(check_id == '<?php $esc($user['id']); ?>')
+					if(check_id == app.user.id)
 					{
 						check_id = message.source_id;
 					}
@@ -347,7 +350,8 @@
 						room = new App.Room({
 							id: message.source_id,
 							type: 'user',
-							name: message.source_name
+							name: message.source_name,
+							alert: 1
 						});
 						
 						App.add_room(room);
@@ -374,7 +378,7 @@
 				}
 				
 				// play sounds
-				if(app.settings.enable_sounds && !supress_sounds)
+				if(app.user.enable_sounds && !supress_sounds)
 				{
 					try
 					{
@@ -399,14 +403,14 @@
 				var message = new App.Message({
 					timestamp: utc,
 					source_type: 'user',
-					source_name: <?php echo json_encode($x7->esc($user['username'])); ?>,
-					source_id: '<?php $esc($user['id']); ?>',
+					source_name: app.user.username,
+					source_id: app.user.id,
 					dest_type: app.active_room().type, 
 					dest_id: app.active_room().id, 
 					message: $('#message_input').val(),
-					font_size: app.settings.message_font_size,
-					font_color: app.settings.message_font_color,
-					font_face: app.settings.message_font_face
+					font_size: app.user.message_font_size,
+					font_color: app.user.message_font_color,
+					font_face: app.user.message_font_face
 				});
 				
 				app.add_message(message, 1);
