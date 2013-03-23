@@ -17,4 +17,4 @@
 		'api_key' => AUTH_KEY,
 	);
 	
-	return array_merge($ext_config, $config);
+	return $ext_config;

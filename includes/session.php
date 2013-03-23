@@ -24,6 +24,11 @@
 		
 		public function handle_key($key)
 		{
+			if(!$key)
+			{
+				return;
+			}
+		
 			try
 			{
 				$this->current_user();
@@ -34,8 +39,11 @@
 				$msg = $api->get_message($key);
 				try
 				{
-					$auth = $this->x7->auth();
-					$auth->login_user_by_id($msg->id);
+					if($msg)
+					{
+						$auth = $this->x7->auth();
+						$auth->login_user_by_id($msg->id);
+					}
 				}
 				catch(exception\authentication_exception $ex)
 				{

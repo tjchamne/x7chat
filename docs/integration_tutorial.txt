@@ -1,0 +1,112 @@
+This tutorial will walk you through the process of integration X7 Chat with a
+another PHP application (the remote application).
+
+
+================================================================================
+== Step 1: Set up an X7 Chat integration module
+================================================================================
+cd x7chat/includes/integration
+cp -R example mymodulename
+
+Edit x7chat/includes/integration/mymodulename/config_loader.php and program it
+to populate the returned array with configuration values loaded from the remote
+application's configuration file.
+
+Alternatively, you can return an empty array from this and just hard-code the 
+values into X7 Chat's config.php file.
+
+Edit x7chat/includes/integration/mymodulename/authenticator.php and program the
+get_url method to return the URL to a page in the remote application.  This page
+will be responsible for handling X7 Chat API messages (we'll create this later).
+
+You will also need to update the namespace of this file to match the name of
+your integration module.
+
+Alternatively, you can return an empty string from this and just hard-code the
+URL into X7 Chat's config.php using the 'auth_api_endpoint' key.
+
+
+================================================================================
+== Step 2: Create an X7 Chat integration library for the remote application
+================================================================================
+cd x7chat/integration
+cp example.php mymodulename.php
+
+Edit x7chat/integration/mymodulename.php and implement the four method stubs:
+
+get_current_user_id(): Must return the user ID of the user who is currently
+logged into the remote application.  This is the user ID defined by your remote
+application; NOT the user ID defined by X7 Chat.  This must return 0 if the user
+is not logged in.
+
+get_user_data_by_id($user_id): Must return an array of data for the specified 
+user.  If the specified user doesn't exist, return null.  The returned array
+must contain the keys:
+	'id' => the user ID of the user (defined by your remote application)
+	'username' => the usrname of the user
+	'email' => the email address of the user
+	
+get_user_data_by_username($username): Must return an array of data for the 
+specified user.  If the specified user doesn't exist, return null.  The returned
+array must contain the keys:
+	'id' => the user ID of the user (defined by your remote application)
+	'username' => the usrname of the user
+	'email' => the email address of the user
+	
+authenticate($username, $password): Must authenticate the specified account.
+Return the user ID if authentication passes, and 0 if it fails.
+
+You will also need to update the class in this file to match the name of
+your integration module.
+
+
+================================================================================
+== Step 3: Create a page in the remote application to handle API calls
+================================================================================
+This page must be loaded when the URL defined in step 1 is accessed.  The page
+must do the following:
+
+--------------------------------------------------------------------------------
+	// determine the absolute path to the x7chat directory
+	$base = '/var/www/html/x7chat/';
+	
+	// load the library created in step 2
+	require_once($base . 'integration/mymodulename.php');
+	
+	// create an instance of the library created in step 2
+	$x7 = new \x7\mymodulename($base);
+	
+	// call the handle handle_messages method
+	$x7->handle_message();
+	
+	// end the script
+	exit;
+--------------------------------------------------------------------------------
+
+
+================================================================================
+== Step 4: Create a page in the remote application to contain X7 Chat
+================================================================================
+X7 Chat is embedded in remote applications using an iframe.  The src attribute
+of the iframe should include a special key value used to log in the user if they
+are already logged into the remote application:
+
+--------------------------------------------------------------------------------
+	// determine the absolute path to the x7chat directory
+	$base = '/var/www/html/x7chat/';
+	
+	// load the library created in step 2
+	require_once($base . 'integration/mymodulename.php');
+	
+	// create an instance of the library created in step 2
+	$x7 = new \x7\mymodulename($base);
+	
+	// this key allows the user to be logged in automatically
+	$key = $x7->generate_session_key();
+	
+	// output the iframe code to the page
+	echo "<iframe
+		src='/path/to/x7chat/index.php?session_key={$key}' 
+		width='100%' 
+		height='600'></iframe>";
+--------------------------------------------------------------------------------

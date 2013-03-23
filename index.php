@@ -8,7 +8,8 @@
 	{
 		if(!empty($config['auth_plugin']))
 		{
-			$config = require('includes/integration/' . $config['auth_plugin'] . '/config_loader.php');
+			$ext_config = require('includes/integration/' . $config['auth_plugin'] . '/config_loader.php');
+			$config = array_merge($config, $ext_config);
 		}
 		
 		if(!empty($config['debug']))

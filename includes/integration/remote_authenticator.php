@@ -44,6 +44,7 @@
 		public function login_user($username, $password)
 		{
 			$response = $this->remote_auth($username, $password);
+			
 			if($response->ok)
 			{
 				$user = $this->sync_user($response->user);
