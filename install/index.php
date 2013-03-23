@@ -1,18 +1,7 @@
 <?php
 
-	// X X7 Chat 3 (always 3)
-	// M major chat version
-	// m minor chat version
-	// T release type (1 = alpha, 3 = beta, 5 = release candidate, 7 = final)
-	// b build number (resets to 0 each time any other digit increases)
-	//                XMMmmTbb
-	define('VERSION', 30200102);
-	//              3.02.00a02
-
 	ini_set('display_errors', 'on');
 	error_reporting(E_ALL);
-
-	define('X7_ROOT', realpath(dirname(__FILE__) . '/../') . '/');
 
 	date_default_timezone_set('UTC');
 	
@@ -36,6 +25,12 @@
 	if(file_exists('../config.php'))
 	{
 		$config = require('../config.php');
+	
+		if(is_array($config) && !empty($config['auth_plugin']))
+		{
+			die("Please install via: " . $config['auth_plugin']);
+		}
+	
 		if(is_array($config) && !empty($config['dbname']))
 		{
 			try
@@ -183,6 +178,10 @@
 					'dbname' => $_POST['dbname'],
 					'host' => $_POST['host'],
 					'prefix' => $_POST['prefix'],
+					'auth_plugin' => '',
+					'auth_api_endpoint' => '',
+					'api_key' => crypt(mt_rand(0, mt_rand_max()) . microtime(TRUE) . print_r($_SERVER, 1)),
+					'debug' => false,
 				), 1) . ';';
 			}
 			else
@@ -221,7 +220,7 @@
 			
 			try
 			{
-				run_sql($db, 'new', $config['prefix']);
+				patch_sql($db, $config['prefix']);
 				
 				$_SESSION['x7chat_install']['step'] = 3;
 				$_POST = array();
@@ -293,45 +292,19 @@
 	if($_SESSION['x7chat_install']['step'] === 4)
 	{
 		$old_version = (int)$_SESSION['x7chat_install']['prev_version'];
-		$apply_patches = array();
-		$patches = scandir('./sql');
-		foreach($patches as $patch)
-		{
-			if(preg_match('#^3[0-9]{7}$#', $patch) && (int)$patch > $old_version)
-			{
-				$apply_patches[] = $patch;
-			}
-		}
 		
-		sort($apply_patches);
-		foreach($apply_patches as $patch)
+		try
 		{
-			try
-			{
-				run_sql($db, $patch, $config['prefix']);
-			}
-			catch(Exception $ex)
-			{
-				$_SESSION['x7chat_install']['error'] = "An error occurred while patching your database: {$ex->getMessage()}";
-			}
+			patch_sql($db, $config['prefix']);
+		}
+		catch(Exception $ex)
+		{
+			$_SESSION['x7chat_install']['error'] = "An error occurred while patching your database: {$ex->getMessage()}";
 		}
 		
 		if(empty($_SESSION['x7chat_install']['error']))
 		{
-			try
-			{
-				$sql = "UPDATE {$config['prefix']}config SET version = :version";
-				$st = $db->prepare($sql);
-				$st->execute(array(
-					':version' => VERSION,
-				));
-				
-				$_SESSION['x7chat_install']['step'] = 5;
-			}
-			catch(Exception $ex)
-			{
-				$_SESSION['x7chat_install']['error'] = "An error occurred while updating your database: {$ex->getMessage()}";
-			}
+			$_SESSION['x7chat_install']['step'] = 5;
 		}
 	}
 ?>

@@ -162,8 +162,10 @@
 	
 		public function __construct($config)
 		{
+			date_default_timezone_set('UTC');
+		
 			$this->system_config = $config;
-			$this->root = $config['root'];
+			$this->root = realpath(dirname(__FILE__) . '/../') . '/';
 		
 			spl_autoload_register(array($this, 'load_class'));
 		}

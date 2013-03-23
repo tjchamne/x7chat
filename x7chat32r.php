@@ -3,26 +3,33 @@
 Plugin Name: X7 Chat
 Plugin URI: http://www.x7chat.com/
 Description: A chatroom
-Version: 3.2.0a2
+Version: 3.2.0a3
 Author: Tim Chamness
 Author URI: http://www.x7chat.com/
 License: GNU GPL3
 */
 
-define('X7_ROOT', dirname(__FILE__) . '/');
-
 register_activation_hook(__FILE__, function() {
 	ini_set('display_errors', 'on');
 	error_reporting(E_ALL);
 	
-	require(X7_ROOT . 'install/util.php');
+	$root = dirname(__FILE__) . '/';
 	
-	$config = require(X7_ROOT . 'plugins/wordpress/config.php');
-	$db = db_connection($config);
+	require($root . 'install/util.php');
 	
-	run_sql($db, 'new', $config['prefix']);
-	run_sql($db, '30200102', $config['prefix']);
-	run_sql($db, '30200103', $config['prefix']);
+	$config = require($root . 'config.php');
+	$ext_config = require($root . 'includes/integration/wordpress/config_loader.php');
+	$config = array_merge($config, $ext_config);
+	
+	try
+	{
+		$db = db_connection($config);
+		patch_sql($db, $config['prefix']);
+	}
+	catch(exception $err)
+	{
+		die($err->getMessage());
+	}
 });
 
 add_shortcode('x7chat', function() {

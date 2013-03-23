@@ -2,13 +2,26 @@
 
 	namespace x7;
 
-	date_default_timezone_set('UTC');
-	
-	error_reporting(E_ALL);
-	ini_set('display_errors', 'on');
-	
 	$config = require('./config.php');
-	if(!is_array($config) || empty($config['dbname']))
+	
+	if(is_array($config))
+	{
+		if(!empty($config['auth_plugin']))
+		{
+			$config = require('includes/integration/' . $config['auth_plugin'] . '/config_loader.php');
+		}
+		
+		if(!empty($config['debug']))
+		{
+			error_reporting(E_ALL);
+			ini_set('display_errors', 'on');
+		}
+		else
+		{
+			ini_set('display_errors', 'off');
+		}
+	}
+	elseif(empty($config['dbname']))
 	{
 		header('Location: ./install/index.php');
 		die("Redirecting to install/index.php");
