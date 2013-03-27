@@ -3,7 +3,6 @@
 	<head>
 		<title><?php $esc($x7->config('title')); ?></title>
 		<link rel="stylesheet" type="text/css" href="scripts/datetimepicker/css/bootstrap-datetimepicker.min.css" />
-		<link rel="stylesheet" type="text/css" href="scripts/select2/select2.css" />
 		<link rel="stylesheet" type="text/css" href="themes/<?php echo $x7->config('theme'); ?>/style.css" />
 	</head>
 	<body>

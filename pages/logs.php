@@ -1,27 +1,48 @@
 <?php
 
 	namespace x7;
-	
+
 	$user = $ses->current_user();
 	$ses->check_bans();
 	
 	$logs = $x7->logs();
+	$msglib = $x7->messages();
 	
-	$messages = $logs->get_room_logs($user, 1);
-	foreach($messages as &$message)
+	$type = isset($_REQUEST['type']) ? $_REQUEST['type'] : '';
+	$room = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : '';
+	
+	$start = isset($_REQUEST['start']) ? $_REQUEST['start'] : '';
+	$end = isset($_REQUEST['end']) ? $_REQUEST['end'] : '';
+	
+	$mode = isset($_REQUEST['log_view_mode']) ? 'download' : 'show';
+	
+	// Only room logs are supported right now
+	if(!$room || $type !== 'room')
 	{
-		$message['timestamp_fmt'] = $message['timestamp'];//$x7_msgs->format_timestamp($message['timestamp']);
+		$req->go('roomlist');
 	}
 	
-	$rooms = $logs->get_visible_rooms($user);
+	$messages = $logs->get_room_logs($user, $room, $start, $end);
+	foreach($messages as &$message)
+	{
+		$message['timestamp_fmt'] = $msglib->format_timestamp($user, $message['timestamp']);
+	}
 	
-	$x7->display('pages/logs', array(
+	$vdata = array(
 		'logs' => $messages,
-		'lock_user_to_self' => false,
-		'allowed_sections' => array(
-			'room',
-			'user',
-			'search',
-		),
-		'rooms' => $rooms,
-	));
+		'id' => $room,
+	);
+	
+	if($mode === 'download')
+	{
+		header("Content-Type: application/octet-stream");
+		header('Content-Disposition: attachment; filename="log.txt"');
+		header("Cache-Control: no-cache, must-revalidate");
+		header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
+		$x7->display('download_logs', $vdata);
+		exit;
+	}
+	else
+	{	
+		$x7->display('pages/logs', $vdata);
+	}

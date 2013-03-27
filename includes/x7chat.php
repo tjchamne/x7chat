@@ -55,6 +55,7 @@
 		protected $mail;
 		protected $admin;
 		protected $logs;
+		protected $messages;
 		
 		public function api()
 		{
@@ -66,6 +67,16 @@
 			}
 			
 			return $this->api;
+		}
+		
+		public function messages()
+		{
+			if(!$this->messages)
+			{
+				$this->messages = new messages($this);
+			}
+			
+			return $this->messages;
 		}
 		
 		public function logs()

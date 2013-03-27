@@ -1,5 +1,7 @@
 <?php
 
+	exit; // no supported yet
+
 	namespace x7;
 	
 	$user = $ses->current_user();

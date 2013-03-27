@@ -42,7 +42,7 @@
 					online.user_id = :user_id
 					AND online.room_id = :id
 					AND online.join_timestamp <= message.timestamp
-					AND online.part_timestamp >= message.timestamp
+					AND (online.part_timestamp >= message.timestamp OR online.part_timestamp IS NULL)
 				WHERE
 					dest_type = 'room'
 					AND dest_id = :id

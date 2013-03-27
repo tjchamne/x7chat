@@ -1,20 +1,15 @@
 <?php
 
-	class x7_messages
+	namespace x7;
+
+	class messages
 	{
 		protected $x7;
-		protected $user;
+		protected $user_settings_cache;
 		
-		protected $ts_on;
-		protected $ts_fmt;
-	
-		public function __construct()
+		public function __construct($x7)
 		{
-			global $x7;
 			$this->x7 = $x7;
-			
-			$x7->load('user');
-			$this->user = new x7_user();
 		}
 		
 		protected function default_ts_settings()
@@ -28,51 +23,60 @@
 			);
 		}
 		
-		protected function load_ts_data()
+		protected function load_ts_data($user)
 		{
-			$settings = $this->user->data();
-			if($settings['use_default_timestamp_settings'])
+			if(!isset($this->user_settings_cache[$user->id]))
 			{
-				$settings = $this->default_ts_settings();
+				if($user->use_default_timestamp_settings)
+				{
+					$user = clone $user;
+					foreach($this->default_ts_settings() as $key => $def_value)
+					{
+						$user->$key = $def_value;
+					}
+				}
+				
+				$ts_on = ($user->enable_timestamps == 1);
+				$ts_fmt = '';
+				
+				if($ts_on)
+				{
+					$ts_fmt = ($user->ts_24_hour ? 'H:i' : 'h:i');
+					
+					if($user->ts_show_seconds)
+					{
+						$ts_fmt .= ':s';
+					}
+					
+					if(!$user->ts_24_hour && $user->ts_show_ampm)
+					{
+						$ts_fmt .= ' a';
+					}
+					
+					if($user->ts_show_date)
+					{
+						$ts_fmt = 'F d, Y ' . $ts_fmt;
+					}
+					
+					$ts_fmt .= ' T';
+				}
+				
+				$this->user_settings_cache[$user->id] = $ts_fmt;
 			}
 			
-			$ts_on = ($settings['enable_timestamps'] == 1);
-			$ts_fmt = ($settings['ts_24_hour'] ? 'H:i' : 'h:i');
-			
-			if($settings['ts_show_seconds'])
-			{
-				$ts_fmt .= ':s';
-			}
-			
-			if(!$settings['ts_24_hour'] && $settings['ts_show_ampm'])
-			{
-				$ts_fmt .= ' a';
-			}
-			
-			if($settings['ts_show_date'])
-			{
-				$ts_fmt = 'F d, Y ' . $ts_fmt;
-			}
-			
-			$ts_fmt .= ' T';
-			
-			$this->ts_on = $ts_on;
-			$this->ts_fmt = $ts_fmt;
+			return $this->user_settings_cache[$user->id];
 		}
 		
-		public function format_timestamp($timestamp)
+		public function format_timestamp($user, $timestamp)
 		{
-			if($this->ts_on === null)
-			{
-				$this->load_ts_data();
-			}
-			
-			if(!$this->ts_on)
+			$fmt = $this->load_ts_data($user);
+		
+			if(!$fmt)
 			{
 				return '';
 			}
 		
-			return date($this->ts_fmt, strtotime($timestamp));
+			return date($fmt, strtotime($timestamp));
 		}
 		
 		public function apply_filters($message)

@@ -7,5 +7,6 @@
 				</div>
 			</div>
 		</div>
+		<script src="scripts/datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 	</body>
 </html>

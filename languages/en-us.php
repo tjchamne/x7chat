@@ -1,5 +1,6 @@
 <?php
 	return array(
+		'datetimepicker_lang' => 'en-US',
 		'login_instructions' => 'Please enter your username and password.',
 		'username_label' => 'Username',
 		'password_label' => 'Password',
@@ -239,6 +240,14 @@
 		'login_required' => 'You must be logged in to access this page.',
 		'page_not_found' => 'The requested page was not found.',
 		'avatar_max_size' => 'Your avatar must be a PNG, JPG or GIF image with a max file size of :size MB',
+		'download_logs' => 'Download Logs',
+		'show_logs' => 'Show Logs',
+		'get_logs' => 'Get Logs',
+		'start_date_label' => 'Start Date',
+		'end_date_label' => 'End Date',
+		'log_view_mode' => 'Log View Mode',
+		'' => '',
+		'' => '',
 		'' => '',
 		'' => '',
 		'' => '',
