@@ -163,6 +163,8 @@
 			}
 			
 			$users->leave_rooms($user, $rooms);
+			
+			$_SESSION['last_event_id'] = 0;
 		}
 		
 		public function logout()
