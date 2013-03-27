@@ -22,7 +22,8 @@
 			ini_set('display_errors', 'off');
 		}
 	}
-	elseif(empty($config['dbname']))
+	
+	if(empty($config['dbname']))
 	{
 		header('Location: ./install/index.php');
 		die("Redirecting to install/index.php");
