@@ -90,7 +90,7 @@
 		);
 		
 		$checks[] = array(
-			'title' => 'Magic Quotes GPC',
+			'title' => 'Magic Quotes GPC Enabled',
 			'server' => (bool)get_magic_quotes_gpc(),
 			'required' => false,
 			'result' => !get_magic_quotes_gpc() ? 'OK' : 'WARN',
@@ -98,7 +98,7 @@
 		);
 		
 		$checks[] = array(
-			'title' => 'Magic Quotes Runtime',
+			'title' => 'Magic Quotes Runtime Enabled',
 			'server' => (bool)get_magic_quotes_runtime(),
 			'required' => false,
 			'result' => !get_magic_quotes_runtime() ? 'OK' : 'FAIL',
@@ -106,7 +106,7 @@
 		);
 		
 		$checks[] = array(
-			'title' => 'Magic Quotes Sybase',
+			'title' => 'Magic Quotes Sybase Enabled',
 			'server' => (bool)ini_get('magic_quotes_sybase'),
 			'required' => false,
 			'result' => !ini_get('magic_quotes_sybase') ? 'OK' : 'FAIL',
@@ -114,19 +114,35 @@
 		);
 		
 		$checks[] = array(
-			'title' => 'File Uploads',
+			'title' => 'File Uploads Enabled',
 			'server' => (bool)ini_get('file_uploads'),
 			'required' => true,
 			'result' => ini_get('file_uploads') ? 'OK' : 'WARN',
-			'fix' => 'Set file_uploads to on',
+			'fix' => 'Set file_uploads to on (required for avatar support)',
 		);
 		
 		$checks[] = array(
-			'title' => 'config.php is writable',
+			'title' => 'GD Extension Enabled',
+			'server' => (bool)extension_loaded('gd'),
+			'required' => true,
+			'result' => extension_loaded('gd') ? 'OK' : 'WARN',
+			'fix' => 'Install the GD extension (required for avatar support)',
+		);
+		
+		$checks[] = array(
+			'title' => 'config.php Writable',
 			'server' => (bool)is_writable('../config.php'),
 			'required' => true,
 			'result' => is_writable('../config.php') ? 'OK' : 'WARN',
 			'fix' => 'Make config.php writable or create it manually',
+		);
+		
+		$checks[] = array(
+			'title' => 'uploads/ Writable',
+			'server' => (bool)is_writable('../uploads'),
+			'required' => true,
+			'result' => is_writable('../uploads') ? 'OK' : 'WARN',
+			'fix' => 'Make uploads/ writable (required for avatar support)',
 		);
 		
 		$checks_pass = true;
@@ -180,7 +196,7 @@
 					'prefix' => $_POST['prefix'],
 					'auth_plugin' => '',
 					'auth_api_endpoint' => '',
-					'api_key' => crypt(mt_rand(0, mt_rand_max()) . microtime(TRUE) . print_r($_SERVER, 1)),
+					'api_key' => hash('sha256', microtime(TRUE) . print_r($_SERVER, 1) . mt_rand(0, mt_getrandmax()) . crypt(mt_rand(0, mt_getrandmax()) . microtime(TRUE) . print_r($_SERVER, 1))),
 					'debug' => false,
 				), 1) . ';';
 			}
