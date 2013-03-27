@@ -1,7 +1,7 @@
 <div id="title_def"><?php $esc($user->username); ?></div>
 <br />
 <?php $display('layout/messages'); ?>
-<?php if($user->avatar): ?>
+<?php if($show_avatar && $user->avatar): ?>
 	<a href="uploads/<?php echo $user->avatar; ?>" target="_blank"><img src="uploads/<?php echo 'normal_' . $user->avatar; ?>" /></a>
 <?php endif; ?>
 

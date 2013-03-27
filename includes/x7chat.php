@@ -247,6 +247,31 @@
 			return null;
 		}
 		
+		public function supports_image_uploads()
+		{
+			return (is_writable('uploads') && extension_loaded('gd') && ini_get('file_uploads'));
+		}
+		
+		public function upload_max_size_mb()
+		{
+			return max($this->return_bytes(ini_get('post_max_size')), $this->return_bytes(ini_get('upload_max_filesize')))/1024/1024;
+		}
+		
+		protected function return_bytes($val) {
+			$val = trim($val);
+			$last = strtolower($val[strlen($val)-1]);
+			switch($last) {
+				case 'g':
+					$val *= 1024;
+				case 'm':
+					$val *= 1024;
+				case 'k':
+					$val *= 1024;
+			}
+
+			return $val;
+		}
+		
 		public function config($var)
 		{
 			if(!$this->config)

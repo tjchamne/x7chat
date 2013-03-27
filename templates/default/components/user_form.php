@@ -50,17 +50,19 @@
 	</select>
 	<p>&nbsp;</p>
 	
-	<label for="avatar"><?php $lang('avatar_label'); ?></label>
-	<div style="display: inline-block;">
-		<?php if($user->avatar): ?>
-			<img src="uploads/normal_<?php echo $user->avatar; ?>" />
-			<br />
-			<input type="checkbox" name="remove_avatar" value="1" /><?php $lang('remove_avatar'); ?>
-			<br />
-		<?php endif; ?>
-		<input type="file" name="avatar" id="avatar" />
-	</div>
-	<p style="clear: both;">&nbsp;</p>
+	<?php if($allow_avatar): ?>
+		<label for="avatar"><?php $lang('avatar_label'); ?></label>
+		<div style="display: inline-block;">
+			<?php if($user->avatar): ?>
+				<img src="uploads/normal_<?php echo $user->avatar; ?>" />
+				<br />
+				<input type="checkbox" name="remove_avatar" value="1" /><?php $lang('remove_avatar'); ?>
+				<br />
+			<?php endif; ?>
+			<input type="file" name="avatar" id="avatar" />
+		</div>
+		<p style="clear: both;"><?php $lang('avatar_max_size', array(':size' => $avatar_max_size)); ?></p>
+	<?php endif; ?>
 	
 	<label for="gender"><?php $lang('gender_label'); ?></label>
 	<select name="gender" id="gender">

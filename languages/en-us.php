@@ -238,4 +238,9 @@
 		'status_label' => 'Status',
 		'login_required' => 'You must be logged in to access this page.',
 		'page_not_found' => 'The requested page was not found.',
+		'avatar_max_size' => 'Your avatar must be a PNG, JPG or GIF image with a max file size of :size MB',
+		'' => '',
+		'' => '',
+		'' => '',
+		'' => '',
 	);

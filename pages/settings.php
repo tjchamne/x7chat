@@ -25,6 +25,8 @@
 	$defaults = merge(clone $user, $post);
 	
 	$x7->display('pages/settings', array(
+		'allow_avatar' => $x7->supports_image_uploads(),
+		'avatar_max_size' => $x7->upload_max_size_mb(),
 		'genders' => $genders, 
 		'user' => $users->output($defaults),
 		'fonts' => $fonts,

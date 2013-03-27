@@ -17,5 +17,6 @@
 	$x7->display('pages/user_room_profile', array(
 		'user' => $view_user,
 		'show_ip' => $show_ip,
-		'allow_ban' => $allow_ban
+		'allow_ban' => $allow_ban,
+		'show_avatar' => $x7->supports_image_uploads(),
 	));
