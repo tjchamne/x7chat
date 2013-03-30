@@ -19,6 +19,7 @@
 	{
 		$edit_user = new model\user(array(
 			'real_name' => '',
+			'group_id' => '',
 			'about' => '',
 			'enable_sounds' => '',
 			'enable_styles' => '',
@@ -44,6 +45,15 @@
 	$sql = "
 		SELECT
 			*
+		FROM {$x7->dbprefix}groups
+	";
+	$st = $db->prepare($sql);
+	$st->execute();
+	$groups = $st->fetchAll();
+	
+	$sql = "
+		SELECT
+			*
 		FROM {$x7->dbprefix}message_fonts
 	";
 	$st = $db->prepare($sql);
@@ -59,10 +69,14 @@
 	$defaults = merge(clone $edit_user, $post);
 	
 	$x7->display('pages/admin/edit_user', array(
+		'allow_avatar' => $x7->supports_image_uploads(),
+		'avatar_max_size' => $x7->upload_max_size_mb(),
+		'allow_group_change' => true,
 		'menu' => $admin->generate_admin_menu($user_id ? 'edit_user' : 'create_user'),
 		'genders' => $genders, 
 		'user' => $users->output($defaults),
 		'fonts' => $fonts,
+		'groups' => $groups,
 		'action' => 'savesettings?from=admin',
 		'allow_username_edit' => true,
 		'require_password_confirm' => false,

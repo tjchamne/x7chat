@@ -22,6 +22,7 @@
 		{
 			$edit_user = new model\user(array(
 				'real_name' => '',
+				'group_id' => '',
 				'about' => '',
 				'enable_sounds' => '',
 				'enable_styles' => '',
@@ -204,6 +205,15 @@
 				$fail = true;
 				$ses->set_message($x7->lang('current_password_wrong'));
 			}
+		}
+	}
+	
+	if($is_admin)
+	{
+		$group = $req->post('group_id');
+		if($group)
+		{
+			$account_fields[] = 'group_id';
 		}
 	}
 	

@@ -60,6 +60,22 @@
 						),
 					),
 				),
+				'groups' => array(
+					'href' => 'admin_list_groups',
+					'items' => array(
+						'list_groups' => array(
+						),
+						'create_group' => array(
+							'href' => 'admin_edit_group',
+						),
+						'edit_group' => array(
+							'hidden' => true,
+						),
+						'delete_group' => array(
+							'hidden' => true,
+						),
+					),
+				),
 				'rooms' => array(
 					'href' => 'admin_list_rooms',
 					'items' => array(

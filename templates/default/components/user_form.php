@@ -27,6 +27,15 @@
 		<label for="email"><?php $lang('email_label'); ?></label>
 		<input type="text" name="email" id="email" value="<?php $esc($user->email); ?>" />
 		<p>&nbsp;</p>
+		
+		<?php if(!empty($allow_group_change)): ?>
+			<label for="group_id"><?php $lang("user_group"); ?></label>
+			<select name="group_id" id="group_id">
+				<?php foreach($groups as $group): ?>
+					<option value="<?php $esc($group['id']); ?>" <?php if($user->group_id == $group['id']) echo "selected"; ?>><?php $esc($group['name']); ?></option>
+				<?php endforeach; ?>
+			</select>
+		<?php endif; ?>
 	<?php endif; ?>
 	
 	<h2><?php $lang('profile_settings'); ?></h2>
