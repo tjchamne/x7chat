@@ -163,6 +163,20 @@
 		$st = $db->prepare($sql);
 		$st->execute($params);
 		
+		$sql = "
+			INSERT INTO {$x7->dbprefix}messages (timestamp, message, message_type, dest_type, dest_id, source_type, source_id) VALUES (:timestamp, :message, :message_type, :dest_type, :dest_id, :source_type, :source_id)
+		";
+		$st = $x7->db()->prepare($sql);
+		$st->execute(array(
+			':timestamp' => date('Y-m-d H:i:s'), 
+			':message_type' => 'room_resync', 
+			':message' => 'room_resync',
+			':dest_type' => 'room', 
+			':dest_id' => 0, 
+			':source_type' => 'system', 
+			':source_id' => 0,
+		));
+		
 		$ses->set_message($x7->lang('group_updated'), 'notice');
 		$goto = 'admin_list_groups';
 	}

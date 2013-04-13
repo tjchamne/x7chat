@@ -40,6 +40,8 @@
 				this.room_id = user.room_id;
 				this.user_name = user.user_name;
 				this.user_status = ko.observable(user.user_status);
+				this.color = ko.observable(user.color ? user.color : '');
+				this.image = ko.observable(user.image || '');
 				this.refreshed = 1;
 			}
 			
@@ -233,6 +235,16 @@
 							{
 								user = room.users()[rkey];
 								user.user_status(data[key].user_status);
+								
+								if(data[key].color)
+								{
+									user.color(data[key].color);
+								}
+								
+								if(data[key].image)
+								{
+									user.image(data[key].image);
+								}
 							}
 						}
 						
@@ -772,7 +784,11 @@
 				</div>
 			</div>
 			<div id="onlinelist" data-bind="foreach: active_room().users()">
-				<div class="onlineuser" data-bind="click: $root.show_user_profile"><a href='#' data-bind="text: user_name"></a><span data-bind="if: user_status() && user_status() != 'available'"> (<span data-bind="text: $root.translate_status(user_status())"></span>)</span></div>
+				<div class="onlineuser" data-bind="click: $root.show_user_profile">
+					<!-- ko if: image -->
+						<img data-bind="{attr: {src: 'uploads/mini_' + image()}}" alt="" />
+					<!-- /ko -->
+					<a href='#' data-bind="{text: user_name, style: {color: '#' + color()}}"></a><span data-bind="if: user_status() && user_status() != 'available'"> (<span data-bind="text: $root.translate_status(user_status())"></span>)</span></div>
 			</div>
 			<div style="clear: both;"></div>
 			<div id="input_form">

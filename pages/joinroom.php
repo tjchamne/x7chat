@@ -89,10 +89,14 @@
 		SELECT
 			room_user.*,
 			user.username AS user_name,
-			user.status_type AS user_status
+			user.status_type AS user_status,
+			`group`.color,
+			`group`.image
 		FROM {$x7->dbprefix}room_users room_user
 		INNER JOIN {$x7->dbprefix}users user ON
 			user.id = room_user.user_id
+		LEFT JOIN {$x7->dbprefix}groups `group` ON
+			group.id = user.group_id
 		WHERE
 			room_id = :room_id
 	";

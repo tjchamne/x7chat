@@ -292,7 +292,7 @@
 					$st->execute(array(
 						':timestamp' => date('Y-m-d H:i:s'), 
 						':message_type' => 'room_resync', 
-						':message' => 'leave_rooms',
+						':message' => 'room_resync',
 						':dest_type' => 'room', 
 						':dest_id' => $room, 
 						':source_type' => 'system', 
