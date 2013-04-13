@@ -37,5 +37,7 @@
 	
 	$x7->display('pages/admin/edit_group', array(
 		'group' => $group,
+		'allow_avatar' => $x7->supports_image_uploads(),
+		'avatar_max_size' => $x7->upload_max_size_mb(),
 		'menu' => $admin->generate_admin_menu($id ? 'edit_group' : 'create_group'),
 	));
