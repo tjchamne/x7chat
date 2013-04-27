@@ -272,7 +272,7 @@
 		'group_avatar' => 'Group Avatar',
 		'perm_ban_users' => 'Allow Banning',
 		'perm_ban_users_desc' => 'Alow members of this group to ban other users.',
-		'' => '',
+		'feature_disabled' => 'This feature is not enabled.',
 		'' => '',
 		'' => '',
 		'' => '',

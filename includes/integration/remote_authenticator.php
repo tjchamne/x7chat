@@ -138,7 +138,9 @@
 			$user->username = $details['username'];
 			$user->email = $details['email'];
 			$user->password = 'x';
+			$user->group_id = !empty($details['admin']) ? 1 : 0; // TODO: remove hard-coded group ID
 			$user = $this->x7->users()->save_user($user);
+			$user = $this->x7->users()->load_by_id($user->id);
 			
 			return $user;
 		}

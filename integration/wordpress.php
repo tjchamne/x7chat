@@ -61,6 +61,7 @@
 				'id' => $user->ID,
 				'username' => $user->display_name,
 				'email' => $user->user_email,
+				'admin' => user_can($user, 'manage_options'),
 			);
 			
 			return $output;

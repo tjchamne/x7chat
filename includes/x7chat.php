@@ -175,9 +175,15 @@
 		{
 			date_default_timezone_set('UTC');
 		
-			$this->system_config = $config;
 			$this->root = realpath(dirname(__FILE__) . '/../') . '/';
-		
+			$this->system_config = $config;
+			
+			if(!empty($config['auth_plugin']))
+			{
+				$plugin_config = require($this->root . 'includes/integration/' . $config['auth_plugin'] . '/config.php');
+				$this->system_config = array_merge($config, $plugin_config);
+			}
+			
 			spl_autoload_register(array($this, 'load_class'));
 		}
 		

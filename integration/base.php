@@ -154,6 +154,7 @@
 		protected function get_api_key()
 		{
 			$config = require($this->root . 'config.php');
+			$ext_config = array();
 			if(!empty($config['auth_plugin']))
 			{
 				$ext_config = require($this->root . 'includes/integration/' . $config['auth_plugin'] . '/config_loader.php');

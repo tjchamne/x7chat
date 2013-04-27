@@ -4,6 +4,12 @@
 	
 	$ses->check_bans();
 	
+	if($x7->system_config('disable_account_management'))
+	{
+		$ses->set_message($x7->lang('feature_disabled'));
+		$req->go('login');
+	}
+	
 	$mail = $x7->mail();
 	$users = $x7->users();
 	

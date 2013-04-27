@@ -28,7 +28,7 @@
 						$cipher = new \Crypt_AES(CRYPT_AES_MODE_ECB);
 						$cipher->setPassword($key, 'pbkdf2', 'sha256', $message['s'], 1000);
 						
-						if(gmmktime() - $message['t'] > self::MAX_AGE)
+						if(@gmmktime() - $message['t'] > self::MAX_AGE)
 						{
 							return false;
 						}
@@ -61,7 +61,7 @@
 			$message = base64_encode(serialize(array(
 				's' => $salt, 
 				'p' => $payload_enc,
-				't' => gmmktime(),
+				't' => @gmmktime(),
 			)));
 			
 			return $message;

@@ -2,7 +2,7 @@
 /*
 Plugin Name: X7 Chat
 Plugin URI: http://www.x7chat.com/
-Description: A chatroom
+Description: A chatroom.  Insert the shorttag [x7chat] on any page to display the chatroom.
 Version: 3.2.0a3
 Author: Tim Chamness
 Author URI: http://www.x7chat.com/
@@ -10,6 +10,8 @@ License: GNU GPL3
 */
 
 register_activation_hook(__FILE__, function() {
+	global $wpdb;
+
 	ini_set('display_errors', 'on');
 	error_reporting(E_ALL);
 	
@@ -29,6 +31,36 @@ register_activation_hook(__FILE__, function() {
 	catch(exception $err)
 	{
 		die($err->getMessage());
+	}
+	
+	$check_page = $wpdb->get_row("
+		SELECT
+			id
+		FROM `{$wpdb->prefix}posts` AS post
+		WHERE
+			post_type='page' 
+			AND (
+				post_status='publish' 
+				OR post_status='draft' 
+				OR post_status='private'
+			) 
+			AND
+			post_content LIKE '%[x7chat]%' LIMIT 1
+	", ARRAY_A);
+	
+	if(empty($check_page))
+	{
+		$page = array(
+			'post_status' => 'publish',
+			'ping_status' => 'closed',
+			'post_name' => 'chat',
+			'post_title' => 'Chat',
+			'comment_status' => 'closed',
+			'post_content' => '[x7chat]',
+			'post_type' => 'page',
+		);
+		$id = wp_insert_post($page);
+		add_post_meta($id, '_wp_page_template', 'page-templates/full-width.php');
 	}
 });
 

@@ -22,7 +22,6 @@
 								<?php endif; ?>
 								<li id="logout_menu"><a href="#"><?php $lang('logout_menu'); ?></a></li>
 							<?php else: ?>
-								<li id="register_menu"><a href="<?php $url('register'); ?>"><?php $lang('register_button'); ?></a></li>
 							<?php endif; ?>
 						</ul>
 					</div>

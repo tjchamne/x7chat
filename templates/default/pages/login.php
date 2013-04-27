@@ -13,7 +13,11 @@
 		<input type="password" name="password" id="password" value="" />
 		
 		<input type="submit" id="login_button" name="login_button" value="<?php $lang('login_button'); ?>" />
-		<a href="<?php $url('register'); ?>" id="register_button"><?php $lang('register_button'); ?></a> | 
-		<a href="<?php $url('resetpassword'); ?>" id="resetpass_button"><?php $lang('resetpass_button'); ?></a>
+		<?php if($can_create_account): ?>
+			<a href="<?php $url('register'); ?>" id="register_button">[<?php $lang('register_button'); ?>]</a> &nbsp;
+		<?php endif; ?>
+		<?php if($can_reset_password): ?>
+			<a href="<?php $url('resetpassword'); ?>" id="resetpass_button">[<?php $lang('resetpass_button'); ?>]</a>
+		<?php endif; ?>
 	</form>
 <?php $display('layout/footer'); ?>

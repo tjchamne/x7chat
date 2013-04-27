@@ -45,6 +45,7 @@ must contain the keys:
 	'id' => the user ID of the user (defined by your remote application)
 	'username' => the usrname of the user
 	'email' => the email address of the user
+	'admin' => true/false value indicating whether the user is an administrator
 	
 get_user_data_by_username($username): Must return an array of data for the 
 specified user.  If the specified user doesn't exist, return null.  The returned
@@ -52,6 +53,7 @@ array must contain the keys:
 	'id' => the user ID of the user (defined by your remote application)
 	'username' => the usrname of the user
 	'email' => the email address of the user
+	'admin' => true/false value indicating whether the user is an administrator
 	
 authenticate($username, $password): Must authenticate the specified account.
 Return the user ID if authentication passes, and 0 if it fails.
