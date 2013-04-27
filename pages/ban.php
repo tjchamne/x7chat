@@ -3,7 +3,7 @@
 	namespace x7;
 	
 	$user = $ses->current_user();
-	$req->require_permission('access_admin_panel');
+	$req->require_permission('ban_users');
 	$ses->check_bans();
 	
 	$users = $x7->users();

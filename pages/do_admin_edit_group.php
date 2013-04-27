@@ -14,6 +14,7 @@
 	$view_logs = isset($_POST['view_logs']) ? 1 : 0;
 	$view_unrestricted_logs = isset($_POST['view_unrestricted_logs']) ? 1 : 0;
 	$view_private_logs = isset($_POST['view_private_logs']) ? 1 : 0;
+	$ban_users = isset($_POST['ban_users']) ? 1 : 0;
 	$color = isset($_POST['color']) ? $_POST['color'] : '';
 	
 	$group = null;
@@ -86,6 +87,7 @@
 			':view_logs' => $view_logs,
 			':view_unrestricted_logs' => $view_unrestricted_logs,
 			':view_private_logs' => $view_private_logs,
+			':ban_users' => $ban_users,
 			':color' => $color,
 		);
 		
@@ -138,6 +140,7 @@
 					view_logs = :view_logs,
 					view_unrestricted_logs = :view_unrestricted_logs,
 					color = :color,
+					ban_users = :ban_users,
 					view_private_logs = :view_private_logs
 					{$extra_fields}
 				WHERE
@@ -155,6 +158,7 @@
 					view_logs = :view_logs,
 					view_unrestricted_logs = :view_unrestricted_logs,
 					color = :color,
+					ban_users = :ban_users,
 					view_private_logs = :view_private_logs
 					{$extra_fields}
 			";

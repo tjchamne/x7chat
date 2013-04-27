@@ -211,6 +211,9 @@
 			$sql = "
 				SELECT
 					`group`.access_admin_panel,
+					`group`.view_logs,
+					`group`.ban_users,
+					`group`.view_unrestricted_logs,
 					`group`.create_room
 				FROM {$this->dbprefix}groups `group`
 				INNER JOIN {$this->dbprefix}users user ON

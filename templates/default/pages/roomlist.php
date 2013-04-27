@@ -15,8 +15,10 @@
 				<td><?php $esc($room['topic']); ?></td>
 				<td>
 					<a href='#' class='join_room_button' data-room-id='<?php echo $room['id']; ?>'><?php $lang('join_room'); ?></a>
+					<?php if($can_view_logs): ?>
 					|
 					<a data-href='logs?type=room&id=<?php echo $room['id']; ?>' href='#' class='log_room_button'><?php $lang('room_logs'); ?></a>
+					<?php endif; ?>
 				</td>
 			</tr>
 		<?php endforeach; ?>

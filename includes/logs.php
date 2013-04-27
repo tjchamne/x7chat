@@ -34,15 +34,30 @@
 		
 		public function get_room_logs($user, $room_id, $start = null, $end = null)
 		{
+			$users = $this->x7->users();
+		
+			$restrict = '';
+			$params = array(
+				':id' => $room_id,
+			);
+			
+			if(!$users->has_permission($user, 'view_unrestricted_logs'))
+			{
+				$restrict = "
+					INNER JOIN {$this->dbprefix}online AS online ON
+						online.user_id = :user_id
+						AND online.room_id = :id
+						AND online.join_timestamp <= message.timestamp
+						AND (online.part_timestamp >= message.timestamp OR online.part_timestamp IS NULL)
+				";
+				$params[':user_id'] = $user->id;
+			}
+		
 			$sql = "
 				SELECT
 						message.*
 				FROM {$this->dbprefix}messages AS message
-				INNER JOIN {$this->dbprefix}online AS online ON
-					online.user_id = :user_id
-					AND online.room_id = :id
-					AND online.join_timestamp <= message.timestamp
-					AND (online.part_timestamp >= message.timestamp OR online.part_timestamp IS NULL)
+				{$restrict}
 				WHERE
 					dest_type = 'room'
 					AND dest_id = :id
@@ -50,7 +65,6 @@
 				ORDER BY
 					timestamp ASC
 			";
-			$params = array(':id' => $room_id, ':user_id' => $user->id);
 			
 			if($start)
 			{

@@ -11,8 +11,8 @@
 	$view_user_id = isset($_GET['user_id']) ? $_GET['user_id'] : $user->id;
 	$view_user = $users->load_by_id($view_user_id);
 	
-	$show_ip = $users->has_permission($user, 'access_admin_panel');
-	$allow_ban = $users->has_permission($user, 'access_admin_panel');
+	$show_ip = $users->has_permission($user, 'ban_users');
+	$allow_ban = $users->has_permission($user, 'ban_users');
 	
 	$x7->display('pages/user_room_profile', array(
 		'user' => $view_user,

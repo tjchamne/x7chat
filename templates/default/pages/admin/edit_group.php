@@ -35,6 +35,7 @@
 		<label for="create_room"><?php $lang('perm_create_room'); ?></label>
 		<input type="checkbox" name="create_room" id="create_room" <?php if($val('group.create_room')) echo "checked"; ?> />
 		<p><?php $lang('perm_create_room_desc'); ?></p>
+		-->
 		
 		<label for="view_logs"><?php $lang('perm_view_logs'); ?></label>
 		<input type="checkbox" name="view_logs" id="view_logs" <?php if($val('group.view_logs')) echo "checked"; ?> />
@@ -44,10 +45,15 @@
 		<input type="checkbox" name="view_unrestricted_logs" id="view_unrestricted_logs" <?php if($val('group.view_unrestricted_logs')) echo "checked"; ?> />
 		<p><?php $lang('perm_view_unrestricted_logs_desc'); ?></p>
 		
+		<!--
 		<label for="view_private_logs"><?php $lang('perm_view_private_logs'); ?></label>
 		<input type="checkbox" name="view_private_logs" id="view_private_logs" <?php if($val('group.view_private_logs')) echo "checked"; ?> />
 		<p><?php $lang('perm_view_private_logs_desc'); ?></p>
 		-->
+		
+		<label for="ban_users"><?php $lang('perm_ban_users'); ?></label>
+		<input type="checkbox" name="ban_users" id="ban_users" <?php if($val('group.ban_users')) echo "checked"; ?> />
+		<p><?php $lang('perm_ban_users_desc'); ?></p>
 		
 		<input type="submit" value="<?php $lang('save_group_button'); ?>" />
 	</form>

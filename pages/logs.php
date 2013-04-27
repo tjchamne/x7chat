@@ -3,6 +3,7 @@
 	namespace x7;
 
 	$user = $ses->current_user();
+	$req->require_permission('view_logs');
 	$ses->check_bans();
 	
 	$logs = $x7->logs();

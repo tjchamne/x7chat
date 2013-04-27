@@ -1,0 +1,1 @@
+ALTER TABLE `{$prefix}groups` ADD `ban_users` BOOLEAN NOT NULL AFTER `view_private_logs`;

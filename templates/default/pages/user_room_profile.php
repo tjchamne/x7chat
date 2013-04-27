@@ -30,14 +30,19 @@
 	<p><?php $esc($user->status_description); ?> (<?php $user->status_type ? $lang($user->status_type . '_option') : $lang('available_option'); ?>)</p>
 	<hr />
 <?php endif; ?>
+
 <?php if($show_ip && $user->ip): ?>
 	<p><b><?php $lang('ip_label'); ?></b></p>
-	<p><?php $esc($user->ip); ?><?php if($allow_ban): ?> - <a href="#" id="ip_ban"><?php $lang('ban_by_ip'); ?></a><?php endif; ?></p>
+	<p><?php $esc($user->ip); ?></p>
 	<hr />
 <?php endif; ?>
 
 <p><a href="#" id="start_private_chat">Start private chat</a></p>
-<?php if($allow_ban): ?><p><a href="#" id="user_ban"><?php $lang('ban_user'); ?></a></p><?php endif; ?>
+
+<?php if($allow_ban): ?>
+	<p><a href="#" id="ip_ban"><?php $lang('ban_by_ip'); ?></a></p>
+	<p><a href="#" id="user_ban"><?php $lang('ban_user'); ?></a></p>
+<?php endif; ?>
 
 <script type="text/javascript">
 	$("#start_private_chat").bind('click', function() {
