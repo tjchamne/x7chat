@@ -1,9 +1,9 @@
 <?php $display('layout/header'); ?>
 	<script type="text/javascript" src="scripts/ko.js"></script>
 	<script type="text/javascript" src="scripts/jquery.js"></script>
-	<script type="text/javascript" src="scripts/jquery.js"></script>
 	<script type="text/javascript" src="scripts/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
 	<script type="text/javascript" src="scripts/select2/select2.min.js"></script>
+	<script type="text/javascript" src="scripts/jquery.blockui.js"></script>
 	<script type="text/javascript">
 		var App = new function()
 		{
@@ -657,10 +657,23 @@
 		{
 			$("#content_area").slideDown();
 			$("#chat_area").slideUp();
-			$('#close').show();
+			$('#close').hide();
+			
+			$("#page_wrapper").block({
+				message: '<img src="themes/default/ajax-loader.gif" />',
+				css: {
+					border: '',
+					backgroundColor: 'white',
+					width: 'auto',
+					padding: '20px',
+					borderRadius: '5px'
+				},
+			});
 			
 			var handle_page = function(data)
 			{
+				$("#page_wrapper").unblock();
+				
 				if(data)
 				{
 					$("#content_page").html(data);
@@ -692,9 +705,9 @@
 					});
 				});
 				
-				if(!App.active_room())
+				if(App.active_room())
 				{
-					$('#close').hide();
+					$('#close').show();
 				}
 				
 				$('#content_page').scrollTop(0);

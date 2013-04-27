@@ -14,7 +14,7 @@
 	$start = isset($_REQUEST['start']) ? $_REQUEST['start'] : '';
 	$end = isset($_REQUEST['end']) ? $_REQUEST['end'] : '';
 	
-	$mode = isset($_REQUEST['log_view_mode']) ? 'download' : 'show';
+	$mode = isset($_REQUEST['log_view_mode']) ? $_REQUEST['log_view_mode'] : 'show';
 	
 	// Only room logs are supported right now
 	if(!$room || $type !== 'room')

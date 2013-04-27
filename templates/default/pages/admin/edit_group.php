@@ -31,6 +31,7 @@
 		<input type="checkbox" name="access_admin_panel" id="access_admin_panel" <?php if($val('group.access_admin_panel')) echo "checked"; ?> />
 		<p><?php $lang('perm_access_admin_panel_desc'); ?></p>
 		
+		<!--
 		<label for="create_room"><?php $lang('perm_create_room'); ?></label>
 		<input type="checkbox" name="create_room" id="create_room" <?php if($val('group.create_room')) echo "checked"; ?> />
 		<p><?php $lang('perm_create_room_desc'); ?></p>
@@ -46,6 +47,7 @@
 		<label for="view_private_logs"><?php $lang('perm_view_private_logs'); ?></label>
 		<input type="checkbox" name="view_private_logs" id="view_private_logs" <?php if($val('group.view_private_logs')) echo "checked"; ?> />
 		<p><?php $lang('perm_view_private_logs_desc'); ?></p>
+		-->
 		
 		<input type="submit" value="<?php $lang('save_group_button'); ?>" />
 	</form>
