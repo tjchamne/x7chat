@@ -1,7 +1,14 @@
+body{
+	margin: 0px;
+	padding-top: 8px;
+}
+
 #page_wrapper
 {
 	position: static;
-	width: 96%;
+	min-width: 700px;
+	width: 98%;
+	max-width: 98%;
 	margin: auto;
 	font-family: Calibri;
 	font-size: 14px;
@@ -9,6 +16,8 @@
 	color: #555555;
 	border: 1px solid #AAAAAA;
 	box-shadow: 0px 0px 2px #555555;
+	resize: horizontal;
+	overflow: auto;
 }
 
 #page_header
@@ -228,7 +237,7 @@ p
 
 #message_scroll_wrapper
 {
-	height: 75%;
+	height: 60vh;
 	min-height: 300px;
 	overflow: auto;
 	float: left;
@@ -237,6 +246,8 @@ p
 	padding-top: 5px;
 	min-width: 528px;
 	width: 75%;
+	max-width: calc(100% - 170px);
+	resize: both;
 }
 
 #messages
