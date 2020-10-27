@@ -90,7 +90,6 @@
 				this.dest_type = message.dest_type;
 				this.dest_id = message.dest_id;
 				this.raw_message = message.message;
-				
 				this.size = '';
 				if(!app.settings.enable_styles)
 				{
@@ -120,8 +119,8 @@
 				{
 					this.color = message.font_color;
 				}
-				
-				var filtered_message = message.message;
+
+				var filtered_message = message.message; //jabberwock
 				for(var key in app.filters)
 				{
 					var filter = app.filters[key];
@@ -144,8 +143,18 @@
 					var reg = new RegExp(find, "i");
 					filtered_message = filtered_message.replace(reg, repl);
 				}
-				
-				this.message = filtered_message;
+				var sanitized_message = filtered_message;
+				//strips any tags
+				sanitized_message = sanitized_message.replace(/<.+?>/, '');
+
+				/* find anything between brackets i.e. [b], [/b]
+					* get the text inside the brackets
+					* see if it's allowed in hash table
+					* if so, replace with tag to style it.
+					* if not, delete the [b]
+				 */
+
+				this.message = sanitized_message; 
 			}
 			
 			this.add_room = function(room)
@@ -709,7 +718,7 @@
 					<div class="message_container"><span class="timestamp" data-bind="text: timestamp"></span>
 						<!-- ko if: source_type != 'system' -->
 							<span class="sender" data-bind="text: source_name + ':'"></span> 
-							<span class="message" data-bind="text: message, style: { color: color ? '#' + color : '', fontSize: size > 0 ? size + 'px' : '', fontFamily: face ? face : ''}"></span>
+							<span class="message" data-bind="html: message, style: { color: color ? '#' + color : '', fontSize: size > 0 ? size + 'px' : '', fontFamily: face ? face : ''}"></span>
 						<!-- /ko -->
 						<!-- ko if: source_type == 'system' -->
 							<span class="sender system_sender"><?php $lang('system_sender'); ?>: </span>
