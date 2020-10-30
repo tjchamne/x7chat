@@ -1,4 +1,11 @@
 <?php
+
+	function clearHTML($msg){
+	$return='';
+	$return=preg_replace('/<\/?.+?>/m', '', $msg);
+	return $return;
+	}
+
 	$x7->load('user');
 
 	$db = $x7->db();
@@ -11,6 +18,8 @@
 	$room_id = isset($_POST['room']) ? $_POST['room'] : array();
 	$dest_type = isset($_POST['dest_type']) ? $_POST['dest_type'] : array();
 	$message = isset($_POST['message']) ? $_POST['message'] : array();
+
+	$message=clearHTML($message);//clearing HTML tags.
 
 	$server_rooms = isset($_SESSION['rooms']) ? $_SESSION['rooms'] : array();
 	
