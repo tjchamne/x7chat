@@ -3,8 +3,9 @@
 	function clearHTML($msg){
 	$return='';
 	$return=preg_replace('/<\/?.+?>/m', '', $msg);
-	return $return;
+	return htmlentities($return); //convert the remaining <'s and/or >'s to html entities
 	}
+
 
 	$x7->load('user');
 
