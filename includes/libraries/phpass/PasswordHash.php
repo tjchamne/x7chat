@@ -49,12 +49,13 @@ class PasswordHash {
 	function get_random_bytes($count)
 	{
 		$output = '';
-		if (is_readable('/dev/urandom') &&
-		    ($fh = @fopen('/dev/urandom', 'rb'))) {
-			$output = fread($fh, $count);
-			fclose($fh);
-		}
+		//if (is_readable('/dev/urandom') &&
+    //replacing /dev/urandom as apache's base directory might stop php from accessing it. Using php's random_bytes which
+    //on linux, uses /dev/urandom
+	  $output = bin2hex(random_bytes($count));
 
+    /*
+    skip all this. random_bytes() is guaranteed to return number of bytes requested
 		if (strlen($output) < $count) {
 			$output = '';
 			for ($i = 0; $i < $count; $i += 16) {
@@ -65,7 +66,7 @@ class PasswordHash {
 			}
 			$output = substr($output, 0, $count);
 		}
-
+    */
 		return $output;
 	}
 
