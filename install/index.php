@@ -91,7 +91,9 @@
 			'result' => version_compare(phpversion(), '5.3.0', '>=') ? 'OK' : 'FAIL',
 			'fix' => 'Upgrade PHP',
 		);
-		
+
+/*
+magic quotes has been deprecated as of php 7.4.15 and on	
 		$checks[] = array(
 			'title' => 'Magic Quotes GPC',
 			'server' => (bool)get_magic_quotes_gpc(),
@@ -107,7 +109,7 @@
 			'result' => !get_magic_quotes_runtime() ? 'OK' : 'FAIL',
 			'fix' => 'Set magic_quotes_runtime to off',
 		);
-		
+*/		
 		$checks[] = array(
 			'title' => 'Magic Quotes Sybase',
 			'server' => (bool)ini_get('magic_quotes_sybase'),
@@ -419,7 +421,7 @@
 								
 								<form action="index.php" method="POST">
 									<b><label for="host">Database Host</label></b>
-									<input type="text" name="host" value="<?php echo isset($_POST['host']) ? sf($_POST['host']) : 'localhost'; ?>" />
+									<input type="text" name="host" value="<?php echo isset($_POST['host']) ? sf($_POST['host']) : '127.0.0.1'; ?>" />
 									<hr />
 									<b><label for="user">Database Username</label></b>
 									<input type="text" name="user" value="<?php echo isset($_POST['user']) ? sf($_POST['user']) : ''; ?>" />
