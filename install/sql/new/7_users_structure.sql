@@ -1,8 +1,8 @@
 CREATE TABLE `{$prefix}users` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `reset_password` varchar(255) NOT NULL,
+  `password` varchar(255) NULL,
+  `reset_password` varchar(255) NULL,
   `email` varchar(255) NOT NULL,
   `group_id` bigint(20) unsigned NOT NULL,
   `banned` tinyint(1) NOT NULL,
