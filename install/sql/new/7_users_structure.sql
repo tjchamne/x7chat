@@ -5,11 +5,11 @@ CREATE TABLE `{$prefix}users` (
   `reset_password` varchar(255) NULL,
   `email` varchar(255) NOT NULL,
   `group_id` bigint(20) unsigned NOT NULL,
-  `banned` tinyint(1) NOT NULL,
-  `timestamp` datetime NOT NULL,
-  `ip` varchar(45) NOT NULL,
-  `real_name` varchar(255) NOT NULL,
-  `gender` varchar(255) NOT NULL,
-  `about` text NOT NULL,
+  `banned` tinyint(1) NOT NULL DEFAULT 0,
+  `timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `ip` varchar(45) NULL,
+  `real_name` varchar(255) NULL,
+  `gender` varchar(255) NULL,
+  `about` text NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
