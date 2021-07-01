@@ -37,11 +37,11 @@
 	$message_font_face = isset($_POST['message_font_face']) ? (int)$_POST['message_font_face'] : '';
 	
 	$use_default_timestamp_settings = isset($_POST['use_default_timestamp_settings']) ? (int)$_POST['use_default_timestamp_settings'] : '';
-	$enable_timestamps = isset($_POST['enable_timestamps']) ? $_POST['enable_timestamps'] : '';
-	$ts_24_hour = isset($_POST['ts_24_hour']) ? (int)$_POST['ts_24_hour'] : '';
-	$ts_show_seconds = isset($_POST['ts_show_seconds']) ? (int)$_POST['ts_show_seconds'] : '';
-	$ts_show_ampm = isset($_POST['ts_show_ampm']) ? $_POST['ts_show_ampm'] : '';
-	$ts_show_date = isset($_POST['ts_show_date']) ? (int)$_POST['ts_show_date'] : '';
+	$enable_timestamps = isset($_POST['enable_timestamps']) ? (int)$_POST['enable_timestamps'] : 0;
+	$ts_24_hour = isset($_POST['ts_24_hour']) ? (int)$_POST['ts_24_hour'] : 0;
+	$ts_show_seconds = isset($_POST['ts_show_seconds']) ? (int)$_POST['ts_show_seconds'] : 0;
+	$ts_show_ampm = isset($_POST['ts_show_ampm']) ? (int)$_POST['ts_show_ampm'] : 0;
+	$ts_show_date = isset($_POST['ts_show_date']) ? (int)$_POST['ts_show_date'] : 0;
 	
 	$data = array(
 		':user_id' => $user_id,
@@ -180,6 +180,7 @@
 				id = :user_id
 		";
 		$st = $db->prepare($sql);
+    var_dump($data);
 		$st->execute($data);
 		
 		$x7->set_message($x7->lang('settings_updated'), 'notice');
