@@ -6,6 +6,6 @@ CREATE TABLE `{$prefix}messages` (
   `source_type` varchar(255) NOT NULL,
   `source_id` bigint(20) unsigned NOT NULL,
   `message_type` varchar(255) NOT NULL,
-  `message` text NOT NULL,
+  `message` text NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
