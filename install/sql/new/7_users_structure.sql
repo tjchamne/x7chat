@@ -4,7 +4,7 @@ CREATE TABLE `{$prefix}users` (
   `password` varchar(255) NULL,
   `reset_password` varchar(255) NULL,
   `email` varchar(255) NOT NULL,
-  `group_id` bigint(20) unsigned NOT NULL,
+  `group_id` bigint(20) unsigned NOT NULL DEFAULT 2,
   `banned` tinyint(1) NOT NULL DEFAULT 0,
   `timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ip` varchar(45) NULL,
