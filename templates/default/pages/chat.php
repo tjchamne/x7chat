@@ -606,12 +606,10 @@
 			
 			var handle_page = function(data)
 			{
-        console.log(data);
 				if(data)
 				{
 					$("#content_page").html(data);
 				}
-      //$("#content_area").html('<div class="content_page_placeholder">Loading...</div>');
 			
 				var title = $('#content_page #title_def').text();
 				$('#title').text(title);
