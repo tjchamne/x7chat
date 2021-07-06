@@ -1,0 +1,27 @@
+Planned features:
+3.2.0a4
+Moderated rooms (for conducting interviews)
+Hidden rooms (not shown on the roomlist)
+Message to room when a user is banned
+Custom message for banned user
+Ability to ignore other users
+
+3.2.0b
+Statistics API
+Statistics on login page
+Language and theme selector for users
+
+Feature requests:
+Avatar gallery
+Auto-PM Away messages
+Auto-kick for bad words
+Sorting of columns in tables
+Word wrap?
+Sign up admin notification
+Disable enter/leave notices
+Color names (online list)
+Add number of messages to tab/window
+File transfer
+Search archive
+Support departments
+E107 integration

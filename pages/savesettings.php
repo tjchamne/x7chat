@@ -36,7 +36,7 @@
 	$message_font_color = isset($_POST['message_font_color']) ? $_POST['message_font_color'] : '';
 	$message_font_face = isset($_POST['message_font_face']) ? (int)$_POST['message_font_face'] : '';
 	
-	$use_default_timestamp_settings = isset($_POST['use_default_timestamp_settings']) ? (int)$_POST['use_default_timestamp_settings'] : '';
+	$use_default_timestamp_settings = isset($_POST['use_default_timestamp_settings']) ? (int)$_POST['use_default_timestamp_settings'] : 0;
 	$enable_timestamps = isset($_POST['enable_timestamps']) ? (int)$_POST['enable_timestamps'] : 0;
 	$ts_24_hour = isset($_POST['ts_24_hour']) ? (int)$_POST['ts_24_hour'] : 0;
 	$ts_show_seconds = isset($_POST['ts_show_seconds']) ? (int)$_POST['ts_show_seconds'] : 0;

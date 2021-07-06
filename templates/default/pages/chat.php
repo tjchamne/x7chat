@@ -2,6 +2,7 @@
 	<script type="text/javascript" src="scripts/ko.js"></script>
 	<script type="text/javascript" src="scripts/jquery.js"></script>
 	<script type="text/javascript">
+  
 		var App = new function()
 		{
 			var app = this;
@@ -605,10 +606,12 @@
 			
 			var handle_page = function(data)
 			{
+        console.log(data);
 				if(data)
 				{
 					$("#content_page").html(data);
 				}
+      //$("#content_area").html('<div class="content_page_placeholder">Loading...</div>');
 			
 				var title = $('#content_page #title_def').text();
 				$('#title').text(title);
@@ -643,7 +646,8 @@
 				
 				$('#content_page').scrollTop(0);
 			}
-			
+		
+      $('#content_page').html('<div id="loadingAni">&nbsp;</div>');	
 			if(postdata)
 			{
 				$.post(url, postdata, function(data)

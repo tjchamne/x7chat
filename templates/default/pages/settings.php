@@ -14,7 +14,6 @@
 		<?php endforeach; ?>
 	</select>
 	<p>&nbsp;</p>
-	
 	<label for="bio"><?php $lang('bio_label'); ?></label>
 	<textarea name="bio" id="bio"><?php $esc($user['about']); ?></textarea>
 	<p>&nbsp;</p>
