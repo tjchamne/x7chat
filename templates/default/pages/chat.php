@@ -158,8 +158,7 @@
 				//strips any tags
 				sanitized_message = sanitized_message.replace(/<.+?>/, '');
 
-        sanitized_message = App.MessageStyle(sanitized_message);
-        
+        //sanitized_message = App.MessageStyle(sanitized_message);
 
 				this.message = sanitized_message; 
 			}
@@ -301,7 +300,7 @@
 				}
 			}
 			
-			this.add_message = function(message, supress_sounds)
+			this.add_message = function(message, supress_sounds, tag_style = 0)
 			{
 				var do_scroll = false;
 				var messages_height = $("#messages").height();
@@ -348,8 +347,12 @@
 				
 				if(room)
 				{
+          //don't style message, aka, don't translate [b][/b] into <b>b</b>
+          if(tag_style!=1)
+          {
+            message.message = App.MessageStyle(message.message);
+          }
 					room.messages.push(message);
-					
 					if(app.active_room() && app.active_room().id == room.id)
 					{
 						do_scroll = true;
@@ -396,7 +399,6 @@
 					font_face: app.settings.message_font_face
 				});
 				
-				app.add_message(message, 1);
 			
 				$.ajax({
 					url: '<?php $url('send'); ?>',
@@ -410,7 +412,7 @@
 					},
 					success: function(data)
 					{
-						
+				    app.add_message(message, 1);
 					}
 				});
 				
@@ -530,6 +532,8 @@
 							if(data['events'][key].message_type == 'message')
 							{
 								var message = new App.Message(data['events'][key]);
+                //message.message  = App.MessageStyle(message.message);
+
 								App.add_message(message);
 							}
 						}
