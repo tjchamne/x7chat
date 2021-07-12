@@ -544,6 +544,13 @@ p.paginator a.current_page
 	width: 50%;
 }
 
+
+.setting_timestamps
+{
+display: flex;
+flex-direction: row;
+}
+
 .multi_checkbox
 {
 	display: inline-block;
@@ -555,12 +562,14 @@ form.standard_form div.multi_checkbox label
 	width: 400px;
 }
 
-#loadingAni::after{
+#loadingAni::after
+{
 content: "Loading";
 animation: loading 3s infinite;
 }
 
-@keyframes loading{
+@keyframes loading
+{
 0%{content: "Loading";}
 25%{content: "Loading.";}
 50%{content: "Loading..";}
