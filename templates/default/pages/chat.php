@@ -363,7 +363,9 @@
           {
             message.message = App.MessageStyle(message.message);
           }
+
 					room.messages.push(message);
+
 					if(app.active_room() && app.active_room().id == room.id)
 					{
 						do_scroll = true;
@@ -739,8 +741,13 @@
 				<div id="messages" data-bind="foreach: active_room().messages()">
 					<div class="message_container"><span class="timestamp" data-bind="text: timestamp"></span>
 						<!-- ko if: source_type != 'system' -->
-							<span class="sender" data-bind="text: source_name + ':'"></span> 
-							<span class="message" data-bind="html: message, style: { color: color ? '#' + color : '', fontSize: size > 0 ? size + 'px' : '', fontFamily: face ? face : ''}"></span>
+              <!-- ko if: message.substr(0,3) != '/me' -->
+							  <span class="sender" data-bind="text: source_name + ':'"></span> 
+							  <span class="message" data-bind="html: message, style: { color: color ? '#' + color : '', fontSize: size > 0 ? size + 'px' : '', fontFamily: face ? face : ''}"></span>
+              <!-- /ko -->
+              <!-- ko if: message.substr(0,3) == '/me' -->
+							  <span class="emote" data-bind="text: '*' + source_name + ' ' + message.substr(3) +'*'"></span>
+              <!-- /ko -->
 						<!-- /ko -->
 						<!-- ko if: source_type == 'system' -->
 							<span class="sender system_sender"><?php $lang('system_sender'); ?>: </span>

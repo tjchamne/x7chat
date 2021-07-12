@@ -327,6 +327,13 @@ p
 	padding-right: 5px;
 }
 
+.emote
+{
+	color: #008200;
+	font-weight: bolder;
+	padding-right: 5px;
+}
+
 .message
 {
   white-space: pre-wrap;
