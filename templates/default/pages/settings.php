@@ -14,7 +14,6 @@
 		<?php endforeach; ?>
 	</select>
 	<p>&nbsp;</p>
-	
 	<label for="bio"><?php $lang('bio_label'); ?></label>
 	<textarea name="bio" id="bio"><?php $esc($user['about']); ?></textarea>
 	<p>&nbsp;</p>
@@ -42,23 +41,25 @@
 	<label for="enable_sounds"><?php $lang('enable_sounds'); ?></label>
 	<input type="checkbox" name="enable_sounds" id="enable_sounds" value="1" <?php if($user['enable_sounds']) echo 'checked'; ?>>
 	<p><?php $lang('enable_sounds_instr'); ?></p>
-	
-	<label for="timestamp_format"><?php $lang('timestamp_format'); ?></label>
-	<div class="multi_checkbox" id="timestamp_settings">
-		<input type="checkbox" name="use_default_timestamp_settings" id="use_default_timestamp_settings" value="1" <?php if($user['use_default_timestamp_settings']) echo 'checked'; ?>> <label for="use_default_timestamp_settings"><?php $lang('use_default_timestamp_settings'); ?></label>
-		<br />
-		<input type="checkbox" name="enable_timestamps" id="enable_timestamps" value="1" <?php if($user['enable_timestamps']) echo 'checked'; ?>> <label for="enable_timestamps"><?php $lang('enable_timestamps'); ?></label>
-		<br />
-		<input type="checkbox" name="ts_24_hour" id="ts_24_hour" value="1" <?php if($user['ts_24_hour']) echo 'checked'; ?>> <label for="ts_24_hour"><?php $lang('ts_24_hour'); ?></label>
-		<br />
-		<input type="checkbox" name="ts_show_seconds" id="ts_show_seconds" value="1" <?php if($user['ts_show_seconds']) echo 'checked'; ?>> <label for="ts_show_seconds"><?php $lang('ts_show_seconds'); ?></label>
-		<br />
-		<input type="checkbox" name="ts_show_ampm" id="ts_show_ampm" value="1" <?php if($user['ts_show_ampm']) echo 'checked'; ?>> <label for="ts_show_ampm"><?php $lang('ts_show_ampm'); ?></label>
-		<!--
-		<br />
-		<input type="checkbox" name="ts_show_date" id="ts_show_date" value="1" <?php if($user['ts_show_date']) echo 'checked'; ?>> <label for="ts_show_date"><?php $lang('ts_show_date'); ?></label>
-		-->
-	</div>
+
+  <div class="setting_timestamps">	
+    <label for="timestamp_format"><?php $lang('timestamp_format'); ?></label>
+    <div class="multi_checkbox" id="timestamp_settings">
+      <input type="checkbox" name="use_default_timestamp_settings" id="use_default_timestamp_settings" value="1" <?php if($user['use_default_timestamp_settings']) echo 'checked'; ?>> <label for="use_default_timestamp_settings"><?php $lang('use_default_timestamp_settings'); ?></label>
+      <br />
+      <input type="checkbox" name="enable_timestamps" id="enable_timestamps" value="1" <?php if($user['enable_timestamps']) echo 'checked'; ?>> <label for="enable_timestamps"><?php $lang('enable_timestamps'); ?></label>
+      <br />
+      <input type="checkbox" name="ts_24_hour" id="ts_24_hour" value="1" <?php if($user['ts_24_hour']) echo 'checked'; ?>> <label for="ts_24_hour"><?php $lang('ts_24_hour'); ?></label>
+      <br />
+      <input type="checkbox" name="ts_show_seconds" id="ts_show_seconds" value="1" <?php if($user['ts_show_seconds']) echo 'checked'; ?>> <label for="ts_show_seconds"><?php $lang('ts_show_seconds'); ?></label>
+      <br />
+      <input type="checkbox" name="ts_show_ampm" id="ts_show_ampm" value="1" <?php if($user['ts_show_ampm']) echo 'checked'; ?>> <label for="ts_show_ampm"><?php $lang('ts_show_ampm'); ?></label>
+      <!--
+      <br />
+      <input type="checkbox" name="ts_show_date" id="ts_show_date" value="1" <?php if($user['ts_show_date']) echo 'checked'; ?>> <label for="ts_show_date"><?php $lang('ts_show_date'); ?></label>
+      -->
+    </div>
+  </div>
 	<p>&nbsp;</p>
 	
 	<label for="enable_styles"><?php $lang('show_message_styles'); ?></label>

@@ -2,6 +2,7 @@
 	<script type="text/javascript" src="scripts/ko.js"></script>
 	<script type="text/javascript" src="scripts/jquery.js"></script>
 	<script type="text/javascript">
+  
 		var App = new function()
 		{
 			var app = this;
@@ -27,7 +28,36 @@
 				this.user_name = user.user_name;
 				this.refreshed = 1;
 			}
-			
+
+      /*-------------------------------------------
+      pre: none
+      post: message translated from (as an example) [b][/b] to <b></b>
+      translates the pseudo html styling to real styling
+      -------------------------------------------*/
+      this.MessageStyle = function(message)
+      {
+      var patt = 'bi';      
+      let tmpMsg = message;
+      let regex=new RegExp('\\[(['+patt+'])\\](.*?)\\[\\/\\1\\]','g');
+      return tmpMsg.replace(regex,'<$1>$2</$1>');
+      }
+
+      /*-------------------------------------------
+      pre: none
+      post: message translated from (as an example) [b][/b] to <b></b>
+      translates the pseudo html styling to real styling
+      -------------------------------------------*/
+      this.MessageLink = function(message)
+      {
+      let tmpMsg = message;
+      return tmpMsg.replace(/(https?:\/\/[^\s]+)/g,'<a class="chat_link" target="_blank" rel="noopener noreferrer" href="$1">$1</a>');
+      }
+
+	    /*-------------------------------------------
+      pre: everything in this file
+      post: data (timestamp, etc.) processed, message sanitized, message structure set
+      processes, sets up structure and sanitizes messages.
+      -------------------------------------------*/
 			this.Message = function(message)
 			{
 				var dt = new Date();
@@ -90,7 +120,6 @@
 				this.dest_type = message.dest_type;
 				this.dest_id = message.dest_id;
 				this.raw_message = message.message;
-				
 				this.size = '';
 				if(!app.settings.enable_styles)
 				{
@@ -120,7 +149,7 @@
 				{
 					this.color = message.font_color;
 				}
-				
+
 				var filtered_message = message.message;
 				for(var key in app.filters)
 				{
@@ -144,8 +173,11 @@
 					var reg = new RegExp(find, "i");
 					filtered_message = filtered_message.replace(reg, repl);
 				}
-				
-				this.message = filtered_message;
+				var sanitized_message = filtered_message;
+				//strips any tags
+				sanitized_message = sanitized_message.replace(/<.+?>/, '');
+
+				this.message = sanitized_message; 
 			}
 			
 			this.add_room = function(room)
@@ -284,8 +316,13 @@
 					}
 				}
 			}
-			
-			this.add_message = function(message, supress_sounds)
+		
+      /*-------------------------------------------------------------------
+      pre: this.Message(),this.get_room(), this.active_room(), this.MessageStyle()
+      post: message added to the proper room and maybe sounds the alert
+      addes the message to the proper room as well as make sure the styles as needed
+      -------------------------------------------------------------------*/	
+			this.add_message = function(message, supress_sounds, tag_style = 0)
 			{
 				var do_scroll = false;
 				var messages_height = $("#messages").height();
@@ -332,8 +369,16 @@
 				
 				if(room)
 				{
+          if(tag_style!=1)
+          {
+            //don't style message, aka, don't translate [b][/b] into <b>b</b>
+            message.message = App.MessageStyle(message.message);
+            message.message = App.MessageLink(message.message);
+            
+          }
+
 					room.messages.push(message);
-					
+
 					if(app.active_room() && app.active_room().id == room.id)
 					{
 						do_scroll = true;
@@ -380,8 +425,6 @@
 					font_face: app.settings.message_font_face
 				});
 				
-				app.add_message(message, 1);
-			
 				$.ajax({
 					url: '<?php $url('send'); ?>',
 					cache: false,
@@ -394,7 +437,7 @@
 					},
 					success: function(data)
 					{
-						
+				    app.add_message(message, 1);
 					}
 				});
 				
@@ -514,6 +557,7 @@
 							if(data['events'][key].message_type == 'message')
 							{
 								var message = new App.Message(data['events'][key]);
+
 								App.add_message(message);
 							}
 						}
@@ -634,7 +678,8 @@
 				
 				$('#content_page').scrollTop(0);
 			}
-			
+		
+      $('#content_page').html('<div id="loadingAni">&nbsp;</div>');	
 			if(postdata)
 			{
 				$.post(url, postdata, function(data)
@@ -708,8 +753,13 @@
 				<div id="messages" data-bind="foreach: active_room().messages()">
 					<div class="message_container"><span class="timestamp" data-bind="text: timestamp"></span>
 						<!-- ko if: source_type != 'system' -->
-							<span class="sender" data-bind="text: source_name + ':'"></span> 
-							<span class="message" data-bind="text: message, style: { color: color ? '#' + color : '', fontSize: size > 0 ? size + 'px' : '', fontFamily: face ? face : ''}"></span>
+              <!-- ko if: message.substr(0,3) != '/me' -->
+							  <span class="sender" data-bind="text: source_name + ':'"></span> 
+							  <span class="message" data-bind="html: message, style: { color: color ? '#' + color : '', fontSize: size > 0 ? size + 'px' : '', fontFamily: face ? face : ''}"></span>
+              <!-- /ko -->
+              <!-- ko if: message.substr(0,3) == '/me' -->
+							  <span class="emote" data-bind="text: '*' + source_name + ' ' + message.substr(3) +'*'"></span>
+              <!-- /ko -->
 						<!-- /ko -->
 						<!-- ko if: source_type == 'system' -->
 							<span class="sender system_sender"><?php $lang('system_sender'); ?>: </span>
