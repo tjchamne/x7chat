@@ -42,6 +42,17 @@
       return tmpMsg.replace(regex,'<$1>$2</$1>');
       }
 
+      /*-------------------------------------------
+      pre: none
+      post: message translated from (as an example) [b][/b] to <b></b>
+      translates the pseudo html styling to real styling
+      -------------------------------------------*/
+      this.MessageLink = function(message)
+      {
+      let tmpMsg = message;
+      return tmpMsg.replace(/(https?:\/\/[^\s]+)/g,'<a class="chat_link" target="_blank" rel="noopener noreferrer" href="$1">$1</a>');
+      }
+
 	    /*-------------------------------------------
       pre: everything in this file
       post: data (timestamp, etc.) processed, message sanitized, message structure set
@@ -358,10 +369,12 @@
 				
 				if(room)
 				{
-          //don't style message, aka, don't translate [b][/b] into <b>b</b>
           if(tag_style!=1)
           {
+            //don't style message, aka, don't translate [b][/b] into <b>b</b>
             message.message = App.MessageStyle(message.message);
+            message.message = App.MessageLink(message.message);
+            
           }
 
 					room.messages.push(message);
@@ -544,7 +557,6 @@
 							if(data['events'][key].message_type == 'message')
 							{
 								var message = new App.Message(data['events'][key]);
-                //message.message  = App.MessageStyle(message.message);
 
 								App.add_message(message);
 							}

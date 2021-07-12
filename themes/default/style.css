@@ -339,6 +339,18 @@ p
   white-space: pre-wrap;
 }
 
+.chat_link
+{
+  color: #0000EE;
+  text-decoration: underline;
+}
+
+.chat_link:visited
+{
+  color: #551A8B;
+  text-decoration: underline;
+}
+
 #content_area
 {
 	width: 100%;
