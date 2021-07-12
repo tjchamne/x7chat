@@ -28,6 +28,16 @@
 				this.user_name = user.user_name;
 				this.refreshed = 1;
 			}
+
+      this.MessageStyle = function(message)
+      {
+      var patt = 'bi';      
+
+      let tmpMsg = message;
+      let regex=new RegExp('\\[(['+patt+'])\\](.*?)\\[\\/\\1\\]','g');
+      return tmpMsg.replace(regex,'<$1>$2</$1>');
+      //return message;
+      }
 			
 			this.Message = function(message)
 			{
@@ -121,7 +131,7 @@
 					this.color = message.font_color;
 				}
 
-				var filtered_message = message.message; //jabberwock
+				var filtered_message = message.message;
 				for(var key in app.filters)
 				{
 					var filter = app.filters[key];
@@ -148,12 +158,8 @@
 				//strips any tags
 				sanitized_message = sanitized_message.replace(/<.+?>/, '');
 
-				/* find anything between brackets i.e. [b], [/b]
-					* get the text inside the brackets
-					* see if it's allowed in hash table
-					* if so, replace with tag to style it.
-					* if not, delete the [b]
-				 */
+        sanitized_message = App.MessageStyle(sanitized_message);
+        
 
 				this.message = sanitized_message; 
 			}
