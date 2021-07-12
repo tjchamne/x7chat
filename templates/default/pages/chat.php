@@ -29,16 +29,24 @@
 				this.refreshed = 1;
 			}
 
+      /*-------------------------------------------
+      pre: none
+      post: message translated from (as an example) [b][/b] to <b></b>
+      translates the pseudo html styling to real styling
+      -------------------------------------------*/
       this.MessageStyle = function(message)
       {
       var patt = 'bi';      
-
       let tmpMsg = message;
       let regex=new RegExp('\\[(['+patt+'])\\](.*?)\\[\\/\\1\\]','g');
       return tmpMsg.replace(regex,'<$1>$2</$1>');
-      //return message;
       }
-			
+
+	    /*-------------------------------------------
+      pre: everything in this file
+      post: data (timestamp, etc.) processed, message sanitized, message structure set
+      processes, sets up structure and sanitizes messages.
+      -------------------------------------------*/
 			this.Message = function(message)
 			{
 				var dt = new Date();
@@ -157,8 +165,6 @@
 				var sanitized_message = filtered_message;
 				//strips any tags
 				sanitized_message = sanitized_message.replace(/<.+?>/, '');
-
-        //sanitized_message = App.MessageStyle(sanitized_message);
 
 				this.message = sanitized_message; 
 			}
@@ -299,7 +305,12 @@
 					}
 				}
 			}
-			
+		
+      /*-------------------------------------------------------------------
+      pre: this.Message(),this.get_room(), this.active_room(), this.MessageStyle()
+      post: message added to the proper room and maybe sounds the alert
+      addes the message to the proper room as well as make sure the styles as needed
+      -------------------------------------------------------------------*/	
 			this.add_message = function(message, supress_sounds, tag_style = 0)
 			{
 				var do_scroll = false;
@@ -399,7 +410,6 @@
 					font_face: app.settings.message_font_face
 				});
 				
-			
 				$.ajax({
 					url: '<?php $url('send'); ?>',
 					cache: false,
