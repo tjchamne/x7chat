@@ -161,6 +161,7 @@
 		'room' => $room,
 		'users' => $users,
 		'messages' => $messages,
+    'chat_styling' => $user_data['enable_chat_styling']
 	);
 	
 	$x7->display('pages/joinroom', $output);

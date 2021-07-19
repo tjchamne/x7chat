@@ -2,6 +2,7 @@
 	var users = <?php echo json_encode($users); ?>;
 	var room = new App.Room(<?php echo json_encode($room); ?>);
 	var messages = <?php echo json_encode($messages); ?>;
+	var chat_styling = <?php echo json_encode($chat_styling); ?>;
 	room.type = 'room';
 	
 	App.add_room(room);
@@ -14,7 +15,7 @@
 	for(var key in messages)
 	{
 		var message = new App.Message(messages[key]);
-		App.add_message(message);
+		App.add_message(message, 0, chat_styling);
 	}
 	
 	App.set_active_room(room);

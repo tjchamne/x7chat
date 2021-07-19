@@ -65,6 +65,10 @@
 	<label for="enable_styles"><?php $lang('show_message_styles'); ?></label>
 	<input type="checkbox" name="enable_styles" id="enable_styles" value="1" <?php if($user['enable_styles']) echo 'checked'; ?>>
 	<p><?php $lang('show_message_styles_instr'); ?></p>
+
+	<label for="enable_chat_styling"><?php $lang('show_message_chat_styling'); ?></label>
+	<input type="checkbox" name="enable_chat_styling" id="enable_chat_styling" value="1" <?php if($user['enable_chat_styling']) echo 'checked'; ?>>
+	<p><?php $lang('show_message_chat_styling_instr'); ?></p>
 	
 	<label for="message_font_size"><?php $lang('message_font_size'); ?></label>
 	<input type="text" name="message_font_size" id="message_font_size" value="<?php $esc($user['message_font_size']); ?>" />

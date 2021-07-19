@@ -54,6 +54,7 @@
 				'ts_show_ampm',
 				'ts_show_date',
 				'enable_styles',
+				'enable_chat_styling',
 				'message_font_size',
 				'message_font_color',
 				'message_font_face',

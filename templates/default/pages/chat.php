@@ -282,7 +282,7 @@
 									dest_id: rooms[key].id, 
 									message: <?php echo json_encode($x7->lang('leave_message')); ?>.replace(':user', user.user_name)
 								});
-								
+								//user leave message
 								app.add_message(message);
 							}
 						}
@@ -311,7 +311,7 @@
 							dest_id: room.id, 
 							message: <?php echo json_encode($x7->lang('join_message')); ?>.replace(':user', user_room.user_name)
 						});
-						
+						//user join message
 						app.add_message(message);
 					}
 				}
@@ -369,12 +369,11 @@
 				
 				if(room)
 				{
-          if(tag_style!=1)
+          if(tag_style==1)
           {
-            //don't style message, aka, don't translate [b][/b] into <b>b</b>
+            //don't style message, aka, don't translate [b][/b] into <b>b</b> and links
             message.message = App.MessageStyle(message.message);
             message.message = App.MessageLink(message.message);
-            
           }
 
 					room.messages.push(message);
@@ -437,7 +436,7 @@
 					},
 					success: function(data)
 					{
-				    app.add_message(message, 1);
+				    app.add_message(message, 1, app.settings.enable_chat_styling);
 					}
 				});
 				

@@ -27,6 +27,7 @@
 	$bio = isset($_POST['bio']) ? $_POST['bio'] : '';
 	$enable_sounds = isset($_POST['enable_sounds']) ? $_POST['enable_sounds'] : '';
 	$enable_styles = isset($_POST['enable_styles']) ? $_POST['enable_styles'] : '';
+	$enable_chat_styling = isset($_POST['enable_chat_styling']) ? $_POST['enable_chat_styling'] : '';
 	$gender = isset($_POST['gender']) ? $_POST['gender'] : '';
 	$current_password = isset($_POST['current_password']) ? $_POST['current_password'] : '';
 	$new_password = isset($_POST['new_password']) ? $_POST['new_password'] : '';
@@ -50,6 +51,7 @@
 		':gender' => $gender,
 		':enable_sounds' => (int)$enable_sounds,
 		':enable_styles' => (int)$enable_styles,
+		':enable_chat_styling' => (int)$enable_chat_styling,
 		':message_font_size' => $message_font_size,
 		':message_font_color' => $message_font_color,
 		':message_font_face' => $message_font_face,
@@ -166,6 +168,7 @@
 				gender = :gender,
 				enable_sounds = :enable_sounds,
 				enable_styles = :enable_styles,
+				enable_chat_styling = :enable_chat_styling,
 				message_font_size = :message_font_size,
 				message_font_color = :message_font_color,
 				message_font_face = :message_font_face,
@@ -180,7 +183,6 @@
 				id = :user_id
 		";
 		$st = $db->prepare($sql);
-    var_dump($data);
 		$st->execute($data);
 		
 		$x7->set_message($x7->lang('settings_updated'), 'notice');

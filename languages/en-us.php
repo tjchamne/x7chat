@@ -190,6 +190,8 @@
 		'timestamp_format' => 'Message Timestamps',
 		'show_message_styles' => 'Enable Message Styles',
 		'show_message_styles_instr' => 'Check this box to display other users\' custom message styles for incoming messages.  If unchecked, all messages with be shown in your own chosen message style.',
+		'show_message_chat_styling' => 'Enable Chat Styling',
+		'show_message_chat_styling_instr' => 'Check this box to allow for [b] type styling and converting urls to links.',
 		'enable_sounds_instr' => 'Check this box to play a sound when a new message is received.',
 		'enable_timestamps' => 'Enable message timestamps',
 		'ts_24_hour' => 'Use 24 hour time instead of 12 hour time',
