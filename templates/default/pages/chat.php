@@ -29,6 +29,66 @@
 				this.refreshed = 1;
 			}
 
+      //chat history 
+      this.chat_history = [];
+      this.chat_history_limit = 20;
+      this.chat_history_i = this.chat_history.length;
+      this.chat_history_buff = "";
+
+      //push msg into chat_history, but also limit the array
+      /*-------------------------------------------
+      pre: this.chat_history
+      post: this.chat_history with new msg in array. possible old message removed
+      pushes new msg into the array. removes oldest if over limit.
+      -------------------------------------------*/
+      this.chat_history_push = function(msg)
+      {
+        this.chat_history.push(msg);
+        if(this.chat_history.length > this.chat_history_limit)
+        {
+        this.chat_history.shift();
+        }
+        this.chat_history_i=this.chat_history.length;
+      };
+
+      /*-------------------------------------------
+      pre: this.chat_history
+      post: textarea populated with history
+      sets the eventlistener to get the chat history.
+      -------------------------------------------*/
+      this.chat_history_scroll = function(p1, ev)
+      {
+        if(ev.code == "ArrowUp" && ev.ctrlKey)
+        {
+          if(this.chat_history_i==this.chat_history.length)
+          {
+          this.chat_history_buff = ev.target.value;
+          }
+          if(this.chat_history_i<=0){
+          return false;
+          }
+        this.chat_history_i = this.chat_history_i<=0?0:this.chat_history_i-1;
+        ev.target.value = this.chat_history[this.chat_history_i];
+        return false;
+        }
+        if(ev.code == "ArrowDown" && ev.ctrlKey){
+        this.chat_history_i=this.chat_history_i>=this.chat_history.length?this.chat_history.length:this.chat_history_i+1;
+          if(this.chat_history_i==this.chat_history.length)
+          {
+          ev.target.value = this.chat_history_buff;
+          }
+          else
+          {
+          ev.target.value = this.chat_history[this.chat_history_i];
+          }
+        return false;
+        }
+      return true;
+      };
+
+
+
+
       /*-------------------------------------------
       pre: none
       post: message translated from (as an example) [b][/b] to <b></b>
@@ -436,6 +496,7 @@
 					},
 					success: function(data)
 					{
+            app.chat_history_push(message.message); //adding line to the chat_history;
 				    app.add_message(message, 1, app.settings.enable_chat_styling);
 					}
 				});
@@ -453,7 +514,7 @@
 					app.send_message();
 					return false;
 				}
-				
+        
 				return true;
 			}
 			
@@ -772,7 +833,7 @@
 			</div>
 			<div style="clear: both;"></div>
 			<div id="input_form">
-				<textarea id="message_input" data-bind="event: {keypress: message_key}"></textarea>
+				<textarea id="message_input" data-bind="event: { keydown: chat_history_scroll, keypress: message_key }"></textarea>
 				<input type="button" id="send_button" value="<?php $lang('send_button'); ?>" data-bind="click: send_message" />
 				<div style="clear: both;"></div>
 			</div>

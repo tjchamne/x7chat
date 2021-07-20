@@ -1,8 +1,8 @@
 --- /me emotes done
 --- a link for chats done
-turn off styling, [b]/links//me emotes
+--- turn off styling, [b]/links//me emotes done
 posting of images.
-allow to go through chat history
+--- allow to go through chat history done
 
 Planned features:
 3.2.0a4
