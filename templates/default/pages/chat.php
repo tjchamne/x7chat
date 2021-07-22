@@ -617,8 +617,8 @@
 							if(data['events'][key].message_type == 'message')
 							{
 								var message = new App.Message(data['events'][key]);
+                App.add_message(message, 0, App.settings.enable_chat_styling);
 
-								App.add_message(message);
 							}
 						}
 					}
