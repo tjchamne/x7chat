@@ -582,6 +582,19 @@
 					open_content_area('<?php $url('roomlist'); ?>');
 				}
 			}
+
+      //opens the file input
+      this.openFile = function(data)
+      {
+      document.getElementById("upfile_file").click();
+      }
+
+      //uploadFile
+      this.uploadFile = function(data, e)
+      {
+      console.log(data);
+      console.log(e);
+      }
 		
 			this.active_rooms_area_open = false;
 			this.room_count = ko.observable(0);
@@ -833,9 +846,17 @@
 			</div>
 			<div style="clear: both;"></div>
 			<div id="input_form">
+        <div id="message_btn">
+          <span class="material-icons btn">format_bold</span>
+          <span class="material-icons btn">format_italic</span>
+          <span id="uploadPhoto" class="material-icons btn" data-bind="event: { click: openFile }">insert_photo</span>
+        </div>
 				<textarea id="message_input" data-bind="event: { keydown: chat_history_scroll, keypress: message_key }"></textarea>
 				<input type="button" id="send_button" value="<?php $lang('send_button'); ?>" data-bind="click: send_message" />
 				<div style="clear: both;"></div>
+        <form id="upfile" method="post" enctype="multipart/form-data" style="display: none;">
+          <input id="upfile_file" type="file" name="upfile" accept="image/*" data-bind="event: { change: uploadFile }" />
+        </form>
 			</div>
 		<!-- /ko -->
 	</div>

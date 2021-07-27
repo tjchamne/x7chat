@@ -8,6 +8,38 @@ body{
   box-sizing: border-box;
 }
 
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Material Icons'),
+    local('MaterialIcons-Regular'),
+    url(../../pics/MaterialIconsOutlined-Regular.otf) format('opentype');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  color: #999999;
+
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+}
+
+.btn{
+padding: 0px 0px 0px 0px;
+margin-right: 4px;
+cursor: pointer;
+}
 
 #page_wrapper
 {
@@ -85,6 +117,7 @@ body{
 #page_footer
 {
 	width: 100%;
+  margin-top: 8px;
 	text-align: center;
 	font-size: 10px;
 	font-family: Arial, Sans-serif;
@@ -96,7 +129,6 @@ body{
 #footer_inner
 {
 	border-top: 1px solid #AAAAAA;
-  margin-top: 8px;
 	padding: 5px;
 	border-bottom: 1px solid #FAFAFA;
 	height: 14px;
@@ -241,8 +273,8 @@ p
 
 #message_scroll_wrapper
 {
-	height: 60vh;
-	min-height: 300px;
+	height: 45vh;
+	min-height: 230px;
 	overflow: auto;
 	float: left;
 	border-right: 1px solid #DDDDDD;
@@ -254,8 +286,13 @@ p
 	resize: both;
 }
 
-#messages
+#message_btn
 {
+  width: 100%;
+  border-bottom: 1px solid #DDDDDD;
+  margin: 0px 0px 6px 0px;
+  padding: 3px 3px 3px 3px;
+  box-sizing: border-box;
 }
 
 #onlinelist
@@ -280,7 +317,7 @@ p
 	padding: 4px 4px 4px 4px;
 	height: 50px;
 	border: 1px solid #DDDDDD;
-  max-width: 98%;
+  max-width: 99%;
 }
 
 #active_rooms_area ul
