@@ -15,6 +15,22 @@
 			<?php endforeach; ?>
 		</select>
 		<p><?php $lang('auto_join_instr'); ?></p>
+
+		<label for="theme"><?php $lang('theme'); ?></label>
+		<select name="theme" id="theme">
+			<?php foreach($themes as $theme): ?>
+				<option <?php if($config['theme'] == $theme) echo "selected"; ?> value="<?php echo $theme; ?>"><?php $esc($theme); ?></option>
+			<?php endforeach; ?>
+		</select>
+		<p><?php $lang('theme_instr'); ?></p>
+
+		<label for="sound_theme"><?php $lang('sound_theme'); ?></label>
+		<select name="sound_theme" id="sound_theme">
+			<?php foreach($sound_themes as $sound_theme): ?>
+				<option <?php if($config['sound_theme'] == $sound_theme) echo "selected"; ?> value="<?php echo $sound_theme; ?>"><?php $esc($sound_theme); ?></option>
+			<?php endforeach; ?>
+		</select>
+		<p><?php $lang('sound_theme_instr'); ?></p>
 		
 		<label for="allow_guests"><?php $lang('allow_guests'); ?></label>
 		<input type="checkbox" name="allow_guests" id="allow_guests" <?php if($config['allow_guests']) echo "checked"; ?> />

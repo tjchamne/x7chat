@@ -32,10 +32,13 @@
 	{
 		$auto_join = $x7->config('auto_join');
 	}
+
+  $sound_theme = $x7->config('sound_theme');
 	
 	$x7->display('pages/chat', array(
 		'user' => $user->data(), 
 		'settings' => $user->get_settings(),
+		'sound_theme' => $sound_theme,
 		'access_acp' => $access_acp, 
 		'auto_join' => $auto_join,
 		'filters' => $filters,

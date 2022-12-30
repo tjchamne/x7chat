@@ -29,6 +29,8 @@
 	}
 	
 	$config['auto_join'] = isset($_POST['auto_join']) ? $_POST['auto_join'] : 0;
+	$config['theme'] = isset($_POST['theme']) ? $_POST['theme'] : 'default';
+	$config['sound_theme'] = isset($_POST['sound_theme']) ? $_POST['sound_theme'] : 'default';
 	$config['allow_guests'] = isset($_POST['allow_guests']) ? 1 : 0;
 	
 	if(!filter_var($_POST['from_address'], FILTER_VALIDATE_EMAIL))
@@ -94,6 +96,8 @@
 			UPDATE {$x7->dbprefix}config SET
 				title = :chatroom_title,
 				auto_join = :auto_join,
+				theme = :theme,
+				sound_theme = :sound_theme,
 				use_smtp = :use_smtp,
 				smtp_host = :smtp_host,
 				smtp_user = :smtp_user,
@@ -111,6 +115,8 @@
 		$st->execute(array(
 			':chatroom_title' => $config['title'],
 			':auto_join' => $config['auto_join'],
+			':theme' => $config['theme'],
+			':sound_theme' => $config['sound_theme'],
 			':use_smtp' => $config['use_smtp'],
 			':smtp_host' => $config['smtp_host'],
 			':smtp_user' => $config['smtp_user'],

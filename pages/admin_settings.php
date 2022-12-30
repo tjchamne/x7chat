@@ -26,6 +26,22 @@
 	$st->execute();
 	$config = $st->fetch();
 	$st->closeCursor();
+
+  $tmpthemes = scandir('themes');
+  $themes = array();
+  foreach($tmpthemes as $dir){
+      if($dir!== '.' && $dir!=='..'){
+      $themes[] = $dir;
+      }
+  }
+
+  $tmpsthemes = scandir('sounds');
+  $sound_themes = array();
+  foreach($tmpsthemes as $dir){
+      if($dir!== '.' && $dir!=='..' && is_dir('sounds/'.$dir)){
+      $sound_themes[] = $dir;
+      }
+  }
 	
 	$vars = $x7->get_vars();
 	if(!empty($vars['config']))
@@ -36,5 +52,7 @@
 	$x7->display('pages/admin/settings', array(
 		'config' => $config,
 		'rooms' => $rooms,
+		'themes' => $themes,
+		'sound_themes' => $sound_themes,
 		'menu' => generate_admin_menu('settings'),
 	));

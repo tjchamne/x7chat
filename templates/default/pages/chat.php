@@ -861,11 +861,11 @@
 		<!-- /ko -->
 	</div>
 	<audio id="message_sound">
-	   <source src="sounds/message.ogg" type='audio/ogg; codecs="vorbis"'>
-	   <source src="sounds/message.mp3" type='audio/mpeg; codecs="mp3"'>
+	   <source src="sounds/<?php echo $sound_theme; ?>/message.ogg" type='audio/ogg; codecs="vorbis"'>
+	   <source src="sounds/<?php echo $sound_theme; ?>/message.mp3" type='audio/mpeg; codecs="mp3"'>
 	</audio>
 	<audio id="enter_sound">
-	   <source src="sounds/enter.ogg" type='audio/ogg; codecs="vorbis"'>
-	   <source src="sounds/enter.mp3" type='audio/mpeg; codecs="mp3"'>
+	   <source src="sounds/<?php echo $sound_theme; ?>/enter.ogg" type='audio/ogg; codecs="vorbis"'>
+	   <source src="sounds/<?php echo $sound_theme; ?>/enter.mp3" type='audio/mpeg; codecs="mp3"'>
 	</audio>
 <?php $display('layout/footer'); ?>
