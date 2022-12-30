@@ -8,7 +8,7 @@
     if (("Notification" in window)) {
       if (Notification.permission !== "denied") {
         Notification.requestPermission().then((permission) => {
-          if (permission === "granted") {
+          if (permission === "granted" && !window.notifyBool) {
           const notification = new Notification('[x7chat]: system', {body: 'Notification activated'});
           window.notifyBool = true;
           }
@@ -40,7 +40,6 @@
       window.addEventListener('focus', function(){
       window.blurred=false;
       toggleTitle(false);
-      console.log("asdfasdfasdfdsf");
       });
     }
     onEvent();
