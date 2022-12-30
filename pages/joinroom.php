@@ -156,12 +156,12 @@
 	{
 		$_SESSION['rooms'][] = $room_id;
 	}
-	
+  
 	$output = array(
 		'room' => $room,
 		'users' => $users,
 		'messages' => $messages,
-    'chat_styling' => $user_data['enable_chat_styling']
+    'chat_styling' => isset($user_data) && array_key_exists('enable_chat_styling', $user_data) ? $user_data['enable_chat_styling'] : false
 	);
 	
 	$x7->display('pages/joinroom', $output);

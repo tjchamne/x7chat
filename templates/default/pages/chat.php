@@ -2,7 +2,49 @@
 	<script type="text/javascript" src="scripts/ko.js"></script>
 	<script type="text/javascript" src="scripts/jquery.js"></script>
 	<script type="text/javascript">
-  
+
+    window.notifyBool = false;
+    
+    if (("Notification" in window)) {
+      if (Notification.permission !== "denied") {
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+          const notification = new Notification('[x7chat]: system', {body: 'Notification activated'});
+          window.notifyBool = true;
+          }
+        });
+      }
+    }
+    else{
+    console.log("notifcation not supported");
+    }
+
+    const toggleTitle = function(bool) {
+    const ttl = document.getElementsByTagName('title')[0];
+      if(!bool && ttl.innerText.substr(0,2) === '* '){
+      ttl.innerText = ttl.innerText.substr(2);
+      }
+      if(bool){
+      ttl.innerText = '* '+ttl.innerText;
+      }
+    }
+ 
+    function onEvent() {
+      if(window.hasOwnProperty('blurred')){
+      return false;
+      }
+    window.blurred = false;
+      window.addEventListener('blur', function(){
+      window.blurred=true;
+      });
+      window.addEventListener('focus', function(){
+      window.blurred=false;
+      toggleTitle(false);
+      console.log("asdfasdfasdfdsf");
+      });
+    }
+    onEvent();
+
 		var App = new function()
 		{
 			var app = this;
@@ -10,7 +52,7 @@
 			this.settings = <?php echo json_encode($settings); ?>;
 			
 			this.filters = <?php echo json_encode($filters); ?>;
-		
+	
 			this.Room = function(room)
 			{
 				this.id = room.id;
@@ -28,6 +70,24 @@
 				this.user_name = user.user_name;
 				this.refreshed = 1;
 			}
+      
+      this.notifyMsg = function(msg, un, msgTtl='x7chat') {
+        const opts = {
+        body: msg
+        }
+        if(!window.notifyBool) {
+        return false;
+        }
+
+        if (Notification.permission !== "denied") {
+          Notification.requestPermission().then((permission) => {
+            if (permission === "granted") {
+            const notification = new Notification('['+msgTtl+']: '+un, opts);
+            }
+            console.log(permission);
+          });
+        }
+      }
 
       //chat history 
       this.chat_history = [];
@@ -49,6 +109,7 @@
         this.chat_history.shift();
         }
         this.chat_history_i=this.chat_history.length;
+        
       };
 
       /*-------------------------------------------
@@ -464,6 +525,14 @@
 					{
 					}
 				}
+
+        //notification
+        if(window.blurred)
+        {
+        //notification
+        this.notifyMsg(message.raw_message, message.source_name);
+        toggleTitle(true);
+        }
 			}
 			
 			this.send_message = function()
