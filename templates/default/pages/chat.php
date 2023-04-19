@@ -86,9 +86,9 @@
           Notification.requestPermission().then((permission) => {
             if (permission === "granted") {
             const notification = new Notification('['+msgTtl+']: '+un, opts);
-            }
-            notification.onclick = function(){
-            window.focus();
+              notification.onclick = function(){
+              window.focus();
+              }
             }
             console.log(permission);
           });
