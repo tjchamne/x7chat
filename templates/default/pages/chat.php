@@ -11,6 +11,10 @@
           if (permission === "granted" && !window.notifyBool) {
           const notification = new Notification('[x7chat]: system', {body: 'Notification activated'});
           window.notifyBool = true;
+            notification.onclick = function(){
+            window.focus();
+            }
+
           }
         });
       }
@@ -24,7 +28,7 @@
       if(!bool && ttl.innerText.substr(0,2) === '* '){
       ttl.innerText = ttl.innerText.substr(2);
       }
-      if(bool){
+      if(bool && ttl.innerText.substr(0,2) !== '* '){
       ttl.innerText = '* '+ttl.innerText;
       }
     }
@@ -82,6 +86,9 @@
           Notification.requestPermission().then((permission) => {
             if (permission === "granted") {
             const notification = new Notification('['+msgTtl+']: '+un, opts);
+            }
+            notification.onclick = function(){
+            window.focus();
             }
             console.log(permission);
           });
